@@ -38,7 +38,7 @@ class ProductCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: theme.shadowColor.withValues(alpha: 0.1),
+              color: theme.shadowColor.withOpacity(0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -47,9 +47,9 @@ class ProductCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image
-            Expanded(
-              flex: 3,
+            // Product Image (reduced height)
+            SizedBox(
+              height: 12.h,
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12)),
@@ -66,83 +66,77 @@ class ProductCardWidget extends StatelessWidget {
             ),
 
             // Product Details
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: EdgeInsets.all(2.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Product Title
-                    Text(
-                      product["title"] as String,
-                      style: GoogleFonts.inter(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurface,
+            Padding(
+              padding: EdgeInsets.all(1.2.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Product Title
+                  Text(
+                    product["title"] as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurface,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  SizedBox(height: 0.3.h),
+
+                  // Price
+                  Text(
+                    product["price"] as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+
+                  SizedBox(height: 0.3.h),
+
+                  // Seller Info Row
+                  Row(
+                    children: [
+                      // Rating
+                      CustomIconWidget(
+                        iconName: 'star',
+                        color: Colors.amber,
+                        size: 10,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    SizedBox(height: 0.5.h),
-
-                    // Price
-                    Text(
-                      product["price"] as String,
-                      style: GoogleFonts.inter(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.primary,
+                      SizedBox(width: 0.7.w),
+                      Text(
+                        product["rating"].toString(),
+                        style: GoogleFonts.inter(
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.w400,
+                          color: colorScheme.onSurface.withOpacity(0.7),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 0.5.h),
+                      const Spacer(),
 
-                    // Seller Info Row
-                    Row(
-                      children: [
-                        // Rating
-                        CustomIconWidget(
-                          iconName: 'star',
-                          color: Colors.amber,
-                          size: 12,
+                      // Location
+                      CustomIconWidget(
+                        iconName: 'location_on',
+                        color: colorScheme.onSurface.withOpacity(0.6),
+                        size: 12,
+                      ),
+                      SizedBox(width: 1.w),
+                      Text(
+                        product["location"] as String,
+                        style: GoogleFonts.inter(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w400,
+                          color: colorScheme.onSurface.withOpacity(0.7),
                         ),
-                        SizedBox(width: 1.w),
-                        Text(
-                          product["rating"].toString(),
-                          style: GoogleFonts.inter(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w400,
-                            color: colorScheme.onSurface.withValues(alpha: 0.7),
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        // Location
-                        CustomIconWidget(
-                          iconName: 'location_on',
-                          color: colorScheme.onSurface.withValues(alpha: 0.6),
-                          size: 12,
-                        ),
-                        SizedBox(width: 1.w),
-                        Flexible(
-                          child: Text(
-                            product["location"] as String,
-                            style: GoogleFonts.inter(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w400,
-                              color:
-                                  colorScheme.onSurface.withValues(alpha: 0.7),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

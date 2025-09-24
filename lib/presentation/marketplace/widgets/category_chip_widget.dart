@@ -7,12 +7,14 @@ class CategoryChipWidget extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final double fontSize;
 
   const CategoryChipWidget({
-    super.key,
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
+  super.key,
+  required this.label,
+  required this.isSelected,
+  required this.onTap,
+  this.fontSize = 12,
   });
 
   @override
@@ -39,7 +41,7 @@ class CategoryChipWidget extends StatelessWidget {
         child: Text(
           label,
           style: GoogleFonts.inter(
-            fontSize: 12.sp,
+            fontSize: fontSize,
             fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
             color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
           ),

@@ -324,64 +324,66 @@ class _SplashScreenState extends State<SplashScreen>
                   // Loading section
                   Expanded(
                     flex: 1,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (_hasError) ...[
-                          // Error state
-                          CustomIconWidget(
-                            iconName: 'error_outline',
-                            color: Colors.white,
-                            size: 32.w,
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'Connection Error',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Text(
-                            'Retrying... (${_retryCount}/$_maxRetries)',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  fontSize: 12.sp,
-                                ),
-                          ),
-                        ] else ...[
-                          // Loading state
-                          SizedBox(
-                            width: 32.w,
-                            height: 32.w,
-                            child: CircularProgressIndicator(
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Colors.white),
-                              strokeWidth: 3,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (_hasError) ...[
+                            // Error state
+                            CustomIconWidget(
+                              iconName: 'error_outline',
+                              color: Colors.white,
+                              size: 32.w,
                             ),
-                          ),
-                          SizedBox(height: 3.h),
-                          Text(
-                            _isInitialized
-                                ? 'Ready to connect!'
-                                : 'Initializing...',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontSize: 14.sp,
-                                ),
-                          ),
+                            SizedBox(height: 2.h),
+                            Text(
+                              'Connection Error',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16.sp,
+                                  ),
+                            ),
+                            SizedBox(height: 1.h),
+                            Text(
+                              'Retrying... (${_retryCount}/$_maxRetries)',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.8),
+                                    fontSize: 12.sp,
+                                  ),
+                            ),
+                          ] else ...[
+                            // Loading state
+                            SizedBox(
+                              width: 32.w,
+                              height: 32.w,
+                              child: CircularProgressIndicator(
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                                strokeWidth: 3,
+                              ),
+                            ),
+                            SizedBox(height: 3.h),
+                            Text(
+                              _isInitialized
+                                  ? 'Ready to connect!'
+                                  : 'Initializing...',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: 14.sp,
+                                  ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
 

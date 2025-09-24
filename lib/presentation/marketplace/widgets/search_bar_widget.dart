@@ -10,13 +10,15 @@ class SearchBarWidget extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final VoidCallback onFilterTap;
   final String hintText;
+  final double fontSize;
 
   const SearchBarWidget({
-    super.key,
-    required this.controller,
-    required this.onChanged,
-    required this.onFilterTap,
-    this.hintText = 'Search products...',
+  super.key,
+  required this.controller,
+  required this.onChanged,
+  required this.onFilterTap,
+  this.hintText = 'Search products...',
+  this.fontSize = 14,
   });
 
   @override
@@ -43,13 +45,13 @@ class SearchBarWidget extends StatelessWidget {
                 controller: controller,
                 onChanged: onChanged,
                 style: GoogleFonts.inter(
-                  fontSize: 14.sp,
+                  fontSize: fontSize,
                   color: colorScheme.onSurface,
                 ),
                 decoration: InputDecoration(
                   hintText: hintText,
                   hintStyle: GoogleFonts.inter(
-                    fontSize: 14.sp,
+                    fontSize: fontSize,
                     color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   prefixIcon: Padding(

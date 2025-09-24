@@ -373,15 +373,16 @@ class _MarketplaceState extends State<Marketplace> {
               onChanged: _onSearchChanged,
               onFilterTap: _showFilterBottomSheet,
               hintText: 'Search products...',
+              fontSize: 10.sp,
             ),
 
             // Category Chips
             Container(
-              height: 6.h,
-              margin: EdgeInsets.symmetric(vertical: 1.h),
+              height: 4.5.h,
+              margin: EdgeInsets.symmetric(vertical: 0.5.h),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
                 itemCount: _categories.length,
                 itemBuilder: (context, index) {
                   final category = _categories[index];
@@ -389,6 +390,7 @@ class _MarketplaceState extends State<Marketplace> {
                     label: category,
                     isSelected: _selectedCategory == category,
                     onTap: () => _onCategorySelected(category),
+                    fontSize: 9.sp,
                   );
                 },
               ),
@@ -401,15 +403,6 @@ class _MarketplaceState extends State<Marketplace> {
                 child: CustomScrollView(
                   controller: _scrollController,
                   slivers: [
-                    // Recently Viewed Section
-                    if (_recentlyViewed.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: RecentlyViewedWidget(
-                          recentProducts: _recentlyViewed,
-                          onProductTap: _onProductTap,
-                        ),
-                      ),
-
                     // Products Grid
                     _filteredProducts.isEmpty
                         ? _buildEmptyState(colorScheme)
@@ -442,6 +435,15 @@ class _MarketplaceState extends State<Marketplace> {
                               ),
                             ),
                           ),
+
+                    // Recently Viewed Section (moved to bottom)
+                    if (_recentlyViewed.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: RecentlyViewedWidget(
+                          recentProducts: _recentlyViewed,
+                          onProductTap: _onProductTap,
+                        ),
+                      ),
 
                     // Loading indicator
                     if (_isLoading)

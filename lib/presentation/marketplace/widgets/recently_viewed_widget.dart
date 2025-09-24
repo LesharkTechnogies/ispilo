@@ -25,27 +25,27 @@ class RecentlyViewedWidget extends StatelessWidget {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 2.h),
+  margin: EdgeInsets.symmetric(vertical: 1.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: Text(
               'Recently Viewed',
               style: GoogleFonts.inter(
-                fontSize: 18.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
             ),
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 0.5.h),
           SizedBox(
-            height: 25.h,
+            height: 14.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              padding: EdgeInsets.symmetric(horizontal: 2.w),
               itemCount: recentProducts.length,
               itemBuilder: (context, index) {
                 final product = recentProducts[index];
@@ -66,8 +66,8 @@ class RecentlyViewedWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => onProductTap(product),
       child: Container(
-        width: 40.w,
-        margin: EdgeInsets.only(right: 3.w),
+        width: 28.w,
+        margin: EdgeInsets.only(right: 2.w),
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
@@ -83,8 +83,8 @@ class RecentlyViewedWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Product Image
-            Expanded(
-              flex: 3,
+            SizedBox(
+              height: 7.5.h,
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12)),
@@ -98,34 +98,31 @@ class RecentlyViewedWidget extends StatelessWidget {
             ),
 
             // Product Details
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: EdgeInsets.all(2.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product["title"] as String,
-                      style: GoogleFonts.inter(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurface,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+            Padding(
+              padding: EdgeInsets.all(1.2.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product["title"] as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 8.sp,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurface,
                     ),
-                    const Spacer(),
-                    Text(
-                      product["price"] as String,
-                      style: GoogleFonts.inter(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.primary,
-                      ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 0.2.h),
+                  Text(
+                    product["price"] as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],

@@ -46,7 +46,7 @@ class _CustomBottomBarState extends State<CustomBottomBar>
     _BottomNavItem(
       icon: Icons.home_outlined,
       activeIcon: Icons.home,
-      label: 'Home',
+      label: 'Home2',
       route: '/home-feed',
     ),
     _BottomNavItem(
@@ -99,7 +99,6 @@ class _CustomBottomBarState extends State<CustomBottomBar>
       case CustomBottomBarVariant.minimal:
         return _buildMinimalBottomBar(context);
       case CustomBottomBarVariant.standard:
-      default:
         return _buildStandardBottomBar(context);
     }
   }
@@ -124,8 +123,8 @@ class _CustomBottomBarState extends State<CustomBottomBar>
         ],
       ),
       child: Container(
-        height: kBottomNavigationBarHeight,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    height: kBottomNavigationBarHeight,
+    padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: _navItems.asMap().entries.map((entry) {
@@ -172,7 +171,7 @@ class _CustomBottomBarState extends State<CustomBottomBar>
           ),
           child: Container(
             height: kBottomNavigationBarHeight,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7 ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: _navItems.asMap().entries.map((entry) {
@@ -260,44 +259,46 @@ class _CustomBottomBarState extends State<CustomBottomBar>
             return Transform.scale(
               scale: index == widget.currentIndex ? _scaleAnimation.value : 1.0,
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? selectedColor.withAlpha(26)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        isSelected ? item.activeIcon : item.icon,
-                        color: isSelected ? selectedColor : unselectedColor,
-                        size: 22,
-                      ),
-                    ),
-                    if (widget.showLabels) ...[
-                      const SizedBox(height: 2),
-                      AnimatedDefaultTextStyle(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight:
-                              isSelected ? FontWeight.w500 : FontWeight.w400,
-                          color: isSelected ? selectedColor : unselectedColor,
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? selectedColor.withAlpha(26)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(item.label),
+                        child: Icon(
+                          isSelected ? item.activeIcon : item.icon,
+                          color: isSelected ? selectedColor : unselectedColor,
+                          size: 16,
+                        ),
                       ),
+                      if (widget.showLabels) ...[
+                        const SizedBox(height: 0),
+                        AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight:
+                                isSelected ? FontWeight.w500 : FontWeight.w400,
+                            color: isSelected ? selectedColor : unselectedColor,
+                          ),
+                          child: Text(item.label),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             );
-          },
+          }
         ),
       ),
     );
@@ -318,7 +319,7 @@ class _CustomBottomBarState extends State<CustomBottomBar>
     return GestureDetector(
       onTap: () => _handleTap(index, item.route),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -329,7 +330,7 @@ class _CustomBottomBarState extends State<CustomBottomBar>
               size: 22,
             ),
             if (widget.showLabels) ...[
-              const SizedBox(height: 2),
+              const SizedBox(height: 0),
               Text(
                 item.label,
                 style: GoogleFonts.inter(
