@@ -215,11 +215,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
       ),
       // Search action
-      IconButton(
-        icon: const Icon(Icons.search),
-        onPressed: () => Navigator.pushNamed(context, '/education-hub'),
-        tooltip: 'Search',
-      ),
+      // IconButton(
+      //   icon: const Icon(Icons.search),
+      //   onPressed: () => Navigator.pushNamed(context, '/education-hub'),
+      //   tooltip: 'Search',
+      // ),
       // Notifications with badge
       Stack(
         children: [

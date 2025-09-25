@@ -12,6 +12,7 @@ import '../../widgets/custom_bottom_bar.dart';
 import './widgets/settings_section_widget.dart';
 import './widgets/settings_switch_widget.dart';
 import './widgets/settings_tile_widget.dart';
+import 'change_password.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -49,13 +50,13 @@ class _SettingsState extends State<Settings> {
 
   // Mock user data
   final Map<String, dynamic> _userProfile = {
-    "name": "John Smith",
-    "email": "john.smith@ispcompany.com",
+    "name": "Collins muthomi",
+    "email": "lesharkTechnologies@gmail.com",
     "avatar":
         "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400",
     "role": "Network Engineer",
     "verified": true,
-    "joinDate": "January 2023",
+    "joinDate": "september 2025",
   };
 
   @override
@@ -201,6 +202,10 @@ class _SettingsState extends State<Settings> {
 
   void _handlePasswordChange() {
     HapticFeedback.lightImpact();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
+    );
   }
 
   void _handleDataUsage() {

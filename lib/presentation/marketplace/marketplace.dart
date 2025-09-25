@@ -490,7 +490,7 @@ class _MarketplaceState extends State<Marketplace> {
               icon: CustomIconWidget(
                 iconName: 'add',
                 color: colorScheme.onPrimary,
-                size: 24,
+                size: 20,
               ),
               label: Text(
                 'Sell Something',

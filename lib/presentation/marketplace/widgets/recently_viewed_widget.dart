@@ -25,7 +25,7 @@ class RecentlyViewedWidget extends StatelessWidget {
     }
 
     return Container(
-  margin: EdgeInsets.symmetric(vertical: 1.h),
+  margin: EdgeInsets.symmetric(vertical: 0.5.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,7 +34,7 @@ class RecentlyViewedWidget extends StatelessWidget {
             child: Text(
               'Recently Viewed',
               style: GoogleFonts.inter(
-                fontSize: 12.sp,
+                fontSize: 9.sp,
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -42,7 +42,7 @@ class RecentlyViewedWidget extends StatelessWidget {
           ),
           SizedBox(height: 0.5.h),
           SizedBox(
-            height: 14.h,
+            height: 10.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 2.w),
@@ -66,7 +66,7 @@ class RecentlyViewedWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => onProductTap(product),
       child: Container(
-        width: 28.w,
+  width: 18.w,
         margin: EdgeInsets.only(right: 2.w),
         decoration: BoxDecoration(
           color: colorScheme.surface,
@@ -84,7 +84,7 @@ class RecentlyViewedWidget extends StatelessWidget {
           children: [
             // Product Image
             SizedBox(
-              height: 7.5.h,
+              height: 5.5.h,
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12)),
@@ -106,7 +106,7 @@ class RecentlyViewedWidget extends StatelessWidget {
                   Text(
                     product["title"] as String,
                     style: GoogleFonts.inter(
-                      fontSize: 8.sp,
+                      fontSize: 7.sp,
                       fontWeight: FontWeight.w500,
                       color: colorScheme.onSurface,
                     ),
@@ -117,7 +117,7 @@ class RecentlyViewedWidget extends StatelessWidget {
                   Text(
                     product["price"] as String,
                     style: GoogleFonts.inter(
-                      fontSize: 10.sp,
+                      fontSize: 8.sp,
                       fontWeight: FontWeight.w600,
                       color: colorScheme.primary,
                     ),

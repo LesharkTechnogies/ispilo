@@ -32,7 +32,7 @@ class ProductCardWidget extends StatelessWidget {
         onLongPress();
       },
       child: Container(
-        margin: EdgeInsets.all(1.w),
+  margin: EdgeInsets.all(0.5.w),
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
@@ -47,9 +47,9 @@ class ProductCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image (reduced height)
+            // Product Image (smaller height)
             SizedBox(
-              height: 12.h,
+              height: 8.5.h,
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(12)),
@@ -75,7 +75,7 @@ class ProductCardWidget extends StatelessWidget {
                   Text(
                     product["title"] as String,
                     style: GoogleFonts.inter(
-                      fontSize: 9.sp,
+                      fontSize: 7.sp,
                       fontWeight: FontWeight.w500,
                       color: colorScheme.onSurface,
                     ),
@@ -89,7 +89,7 @@ class ProductCardWidget extends StatelessWidget {
                   Text(
                     product["price"] as String,
                     style: GoogleFonts.inter(
-                      fontSize: 10.sp,
+                      fontSize: 8.sp,
                       fontWeight: FontWeight.w600,
                       color: colorScheme.primary,
                     ),
@@ -110,7 +110,7 @@ class ProductCardWidget extends StatelessWidget {
                       Text(
                         product["rating"].toString(),
                         style: GoogleFonts.inter(
-                          fontSize: 8.sp,
+                          fontSize: 7.sp,
                           fontWeight: FontWeight.w400,
                           color: colorScheme.onSurface.withOpacity(0.7),
                         ),
@@ -128,7 +128,7 @@ class ProductCardWidget extends StatelessWidget {
                       Text(
                         product["location"] as String,
                         style: GoogleFonts.inter(
-                          fontSize: 10.sp,
+                          fontSize: 8.sp,
                           fontWeight: FontWeight.w400,
                           color: colorScheme.onSurface.withOpacity(0.7),
                         ),

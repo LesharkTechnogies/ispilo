@@ -61,7 +61,6 @@ class SellerProfileSection extends StatelessWidget {
                   ),
                 ),
               ),
-
               // Verification Badge
               if (isVerified)
                 Positioned(
@@ -87,85 +86,86 @@ class SellerProfileSection extends StatelessWidget {
                 ),
             ],
           ),
-
-          const SizedBox(width: 16),
-
-          // Seller Info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(width: 12),
+          Flexible(
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      sellerName,
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurface,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            sellerName,
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                          if (isVerified) ...[
+                            const SizedBox(width: 4),
+                            CustomIconWidget(
+                              iconName: 'verified',
+                              color: colorScheme.primary,
+                              size: 16,
+                            ),
+                          ],
+                        ],
                       ),
-                    ),
-                    if (isVerified) ...[
-                      const SizedBox(width: 4),
-                      CustomIconWidget(
-                        iconName: 'verified',
-                        color: colorScheme.primary,
-                        size: 16,
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          CustomIconWidget(
+                            iconName: 'star',
+                            color: Colors.amber,
+                            size: 14,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            sellerRating.toStringAsFixed(1),
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '• $totalSales sales',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: colorScheme.onSurface.withValues(alpha: 0.6),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    CustomIconWidget(
-                      iconName: 'star',
-                      color: Colors.amber,
-                      size: 14,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      sellerRating.toStringAsFixed(1),
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurface,
+                TextButton(
+                  onPressed: onViewProfile,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(
+                        color: colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '• $totalSales sales',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
+                  ),
+                  child: Text(
+                    'View Profile',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.primary,
                     ),
-                  ],
+                  ),
                 ),
               ],
-            ),
-          ),
-
-          // View Profile Button
-          TextButton(
-            onPressed: onViewProfile,
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-            child: Text(
-              'View Profile',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: colorScheme.primary,
-              ),
             ),
           ),
         ],
