@@ -66,7 +66,7 @@ class CourseCardWidget extends StatelessWidget {
           child: CustomImageWidget(
             imageUrl: course["thumbnail"] as String,
             width: double.infinity,
-            height: 20.h,
+            height: 14.h,
             fit: BoxFit.cover,
           ),
         ),
@@ -85,7 +85,7 @@ class CourseCardWidget extends StatelessWidget {
                 'NEW',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 10.sp,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -104,7 +104,7 @@ class CourseCardWidget extends StatelessWidget {
               course["duration"] as String,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 10.sp,
+                fontSize: 11,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -123,7 +123,7 @@ class CourseCardWidget extends StatelessWidget {
         children: [
           Text(
             course["title"] as String,
-            style: theme.textTheme.titleMedium?.copyWith(
+            style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
             maxLines: 2,
@@ -134,7 +134,7 @@ class CourseCardWidget extends StatelessWidget {
             children: [
               CustomIconWidget(
                 iconName: 'person',
-                size: 14.sp,
+                size: 16,
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
               SizedBox(width: 1.w),
@@ -144,6 +144,7 @@ class CourseCardWidget extends StatelessWidget {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -158,7 +159,7 @@ class CourseCardWidget extends StatelessWidget {
             ],
           ),
           if (isEnrolled) ...[
-            SizedBox(height: 1.5.h),
+            SizedBox(height: 0.7.h),
             _buildProgressSection(theme, progress),
           ],
         ],
@@ -174,7 +175,7 @@ class CourseCardWidget extends StatelessWidget {
       children: [
         CustomIconWidget(
           iconName: 'star',
-          size: 14.sp,
+          size: 16,
           color: AppTheme.getWarningColor(theme.brightness == Brightness.light),
         ),
         SizedBox(width: 1.w),
@@ -279,7 +280,7 @@ class CourseCardWidget extends StatelessWidget {
             ListTile(
               leading: CustomIconWidget(
                 iconName: 'bookmark_border',
-                size: 20.sp,
+                size: 24,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
               title: const Text('Save for Later'),
@@ -291,7 +292,7 @@ class CourseCardWidget extends StatelessWidget {
             ListTile(
               leading: CustomIconWidget(
                 iconName: 'share',
-                size: 20.sp,
+                size: 24,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
               title: const Text('Share'),
@@ -303,7 +304,7 @@ class CourseCardWidget extends StatelessWidget {
             ListTile(
               leading: CustomIconWidget(
                 iconName: 'favorite_border',
-                size: 20.sp,
+                size: 24,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
               title: const Text('Add to Wishlist'),

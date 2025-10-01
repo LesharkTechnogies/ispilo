@@ -2,8 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../core/app_export.dart';
-import '../../../widgets/custom_image_widget.dart';
+import '../../../widgets/profile_avatar.dart';
 
 class StoryItemWidget extends StatelessWidget {
   final Map<String, dynamic> story;
@@ -59,11 +58,10 @@ class StoryItemWidget extends StatelessWidget {
                       ),
                     ),
                     child: ClipOval(
-                      child: CustomImageWidget(
+                      child: ProfileAvatar(
                         imageUrl: story['avatar'] as String? ?? '',
-                        width: min(14.w, 56),
-                        height: min(14.w, 56),
-                        fit: BoxFit.cover,
+                        size: min(14.w, 56).toDouble(),
+                        isOnline: story['isOnline'] as bool? ?? false,
                       ),
                     ),
                   ),

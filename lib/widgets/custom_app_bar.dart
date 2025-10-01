@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../core/theme_provider.dart';
+import '../widgets/profile_avatar.dart';
 
 /// Custom app bar widget implementing Professional Social Minimalism design
 /// with enterprise-grade reliability and trust signals for ISP community
@@ -255,9 +256,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
         ],
       ),
-      // Profile action
+      // Profile action (dynamic avatar)
       IconButton(
-        icon: const Icon(Icons.account_circle_outlined),
+        icon: ProfileAvatar(
+          imageUrl: null, // will be replaced by settings/profile data if wired
+          size: 28,
+          isOnline: false,
+        ),
         onPressed: () => Navigator.pushNamed(context, '/settings'),
         tooltip: 'Profile',
       ),

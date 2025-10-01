@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/app_export.dart';
 import '../../core/theme_provider.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/fullscreen_image_viewer.dart';
 import '../../widgets/custom_bottom_bar.dart';
 import './widgets/settings_section_widget.dart';
 import './widgets/settings_switch_widget.dart';
@@ -100,6 +101,7 @@ class _SettingsState extends State<Settings> {
         final bool canCheck = await _localAuth.canCheckBiometrics ||
             await _localAuth.isDeviceSupported();
         if (!canCheck) {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text('Biometrics not available on this device')),
@@ -114,11 +116,13 @@ class _SettingsState extends State<Settings> {
         if (didAuth) {
           setState(() => _biometricAuth = true);
           await _saveSettings();
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Biometric authentication enabled')),
           );
         }
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Biometric setup failed: $e')),
         );
@@ -126,6 +130,7 @@ class _SettingsState extends State<Settings> {
     } else {
       setState(() => _biometricAuth = false);
       await _saveSettings();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Biometric authentication disabled')),
       );
@@ -391,13 +396,28 @@ class _SettingsState extends State<Settings> {
           children: [
             Stack(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: CustomImageWidget(
-                    imageUrl: _userProfile['avatar'],
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    final url = _userProfile['avatar'] as String? ?? '';
+                    if (url.isEmpty) return;
+                    showDialog(
+                      context: context,
+                      builder: (_) =>
+                          FullScreenImageViewer(imageUrl: url, heroTag: url),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Hero(
+                      tag:
+                          _userProfile['avatar'] as String? ?? 'profile_avatar',
+                      child: CustomImageWidget(
+                        imageUrl: _userProfile['avatar'],
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
                 if (_userProfile['verified'] == true)

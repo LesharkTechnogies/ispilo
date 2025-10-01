@@ -121,7 +121,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               ),
               child: CustomIconWidget(
                 iconName: 'tune',
-                size: 20.sp,
+                size: 15.sp,
                 color: colorScheme.onPrimary,
               ),
             ),

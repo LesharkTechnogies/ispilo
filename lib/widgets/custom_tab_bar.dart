@@ -46,7 +46,6 @@ class CustomTabBar extends StatefulWidget {
 class _CustomTabBarState extends State<CustomTabBar>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -55,13 +54,7 @@ class _CustomTabBarState extends State<CustomTabBar>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    // scale animation removed: kept the controller for timing/haptic sync
   }
 
   @override
@@ -80,7 +73,6 @@ class _CustomTabBarState extends State<CustomTabBar>
       case CustomTabBarVariant.segmented:
         return _buildSegmentedTabBar(context);
       case CustomTabBarVariant.standard:
-      default:
         return _buildStandardTabBar(context);
     }
   }

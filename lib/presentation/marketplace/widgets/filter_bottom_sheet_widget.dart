@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class FilterBottomSheetWidget extends StatefulWidget {
   final Map<String, dynamic> currentFilters;
   final Function(Map<String, dynamic>) onApplyFilters;
@@ -38,13 +37,95 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
     'Fair',
   ];
 
-  final List<String> _locations = [
-    'Any Location',
-    'Within 10 miles',
-    'Within 25 miles',
-    'Within 50 miles',
-    'Within 100 miles',
-  ];
+  // legacy placeholder removed in favor of county list
+
+  // Countries and their regions (small curated lists for selection)
+  final Map<String, List<String>> _countryRegions = {
+    'Kenya': [
+      'Mombasa',
+      'Kwale',
+      'Kilifi',
+      'Tana River',
+      'Lamu',
+      'Taita-Taveta',
+      'Garissa',
+      'Wajir',
+      'Mandera',
+      'Marsabit',
+      'Isiolo',
+      'Meru',
+      'Tharaka-Nithi',
+      'Embu',
+      'Kitui',
+      'Machakos',
+      'Makueni',
+      'Nyandarua',
+      'Nyeri',
+      'Kirinyaga',
+      'Murang\'a',
+      'Kiambu',
+      'Turkana',
+      'West Pokot',
+      'Samburu',
+      'Trans Nzoia',
+      'Uasin Gishu',
+      'Elgeyo-Marakwet',
+      'Nandi',
+      'Baringo',
+      'Laikipia',
+      'Nakuru',
+      'Narok',
+      'Kajiado',
+      'Kericho',
+      'Bomet',
+      'Kakamega',
+      'Vihiga',
+      'Bungoma',
+      'Busia',
+      'Siaya',
+      'Kisumu',
+      'Homa Bay',
+      'Migori',
+      'Kisii',
+      'Nyamira',
+      'Nairobi'
+    ],
+    'Uganda': [
+      'Kampala',
+      'Wakiso',
+      'Mukono',
+      'Jinja',
+      'Mbale',
+      'Gulu',
+      'Lira',
+      'Mbarara',
+      'Masaka',
+      'Fort Portal',
+      'Hoima',
+      'Soroti',
+      'Kabale'
+    ],
+    'Tanzania': [
+      'Dar es Salaam',
+      'Dodoma',
+      'Arusha',
+      'Mwanza',
+      'Zanzibar',
+      'Kilimanjaro',
+      'Mbeya',
+      'Iringa',
+      'Morogoro',
+      'Tanga',
+      'Kigoma',
+      'Ruvuma',
+      'Kagera'
+    ],
+  };
+
+  String _selectedCountry = 'Kenya';
+  final TextEditingController _locationSearchController =
+      TextEditingController();
+  List<String> _filteredLocations = [];
 
   @override
   void initState() {
@@ -54,6 +135,18 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
       (_filters['minPrice'] ?? 0).toDouble(),
       (_filters['maxPrice'] ?? 10000).toDouble(),
     );
+    // initialize filtered locations with full counties list
+    _filteredLocations = List<String>.from(_countryRegions[_selectedCountry]!);
+    // if a location was preselected, ensure it's in the filters
+    if (_filters['location'] == null) {
+      _filters['location'] = 'Any Location';
+    }
+  }
+
+  @override
+  void dispose() {
+    _locationSearchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -271,7 +364,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
         ),
         SizedBox(height: 1.h),
         ..._conditions.map((condition) {
-          final isSelected = _filters['condition'] == condition;
+          // 'isSelected' was unused; RadioListTile uses groupValue instead.
           return RadioListTile<String>(
             title: Text(
               condition,
@@ -286,7 +379,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
             activeColor: colorScheme.primary,
             contentPadding: EdgeInsets.zero,
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -304,22 +397,115 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
           ),
         ),
         SizedBox(height: 1.h),
-        ..._locations.map((location) {
-          return RadioListTile<String>(
-            title: Text(
-              location,
-              style: GoogleFonts.inter(
-                fontSize: 14.sp,
-                color: colorScheme.onSurface,
+
+        // Country selector chips
+        Wrap(
+          spacing: 3.w,
+          runSpacing: 1.h,
+          children: _countryRegions.keys.map((country) {
+            final isSelected = _selectedCountry == country;
+            return ChoiceChip(
+              label: Text(country, style: GoogleFonts.inter(fontSize: 12.sp)),
+              selected: isSelected,
+              onSelected: (sel) {
+                if (!sel) return;
+                setState(() {
+                  _selectedCountry = country;
+                  _locationSearchController.clear();
+                  _filteredLocations =
+                      List<String>.from(_countryRegions[country]!);
+                });
+              },
+              selectedColor: colorScheme.primary,
+              backgroundColor: colorScheme.surface,
+              labelStyle: GoogleFonts.inter(
+                fontSize: 12.sp,
+                color:
+                    isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
               ),
+            );
+          }).toList(),
+        ),
+        SizedBox(height: 1.h),
+
+        // Search field for regions
+        TextField(
+          controller: _locationSearchController,
+          decoration: InputDecoration(
+            hintText: 'Search region (e.g. Machakos)',
+            prefixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-            value: location,
-            groupValue: _filters['location'],
-            onChanged: (value) => setState(() => _filters['location'] = value),
-            activeColor: colorScheme.primary,
-            contentPadding: EdgeInsets.zero,
-          );
-        }).toList(),
+            isDense: true,
+            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          ),
+          onChanged: (q) {
+            setState(() {
+              final query = q.trim().toLowerCase();
+              final regions = _countryRegions[_selectedCountry]!;
+              if (query.isEmpty) {
+                _filteredLocations = List<String>.from(regions);
+              } else {
+                _filteredLocations = regions
+                    .where((c) => c.toLowerCase().contains(query))
+                    .toList();
+              }
+            });
+          },
+        ),
+
+        SizedBox(height: 1.h),
+
+        // 'Any Location' quick option
+        ListTile(
+          title: Text(
+            'Any Location',
+            style: GoogleFonts.inter(fontSize: 14.sp),
+          ),
+          trailing: _filters['location'] == 'Any Location'
+              ? Icon(Icons.check, color: colorScheme.primary)
+              : null,
+          onTap: () => setState(() => _filters['location'] = 'Any Location'),
+          contentPadding: EdgeInsets.zero,
+        ),
+
+        // Filtered counties list (searchable)
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 28.h),
+          child: _filteredLocations.isEmpty
+              ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2.h),
+                  child: Text(
+                    'No matches',
+                    style: GoogleFonts.inter(
+                      fontSize: 14.sp,
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _filteredLocations.length,
+                  itemBuilder: (context, idx) {
+                    final loc = _filteredLocations[idx];
+                    final composed = '$_selectedCountry - $loc';
+                    final selected = _filters['location'] == composed;
+                    return ListTile(
+                      title: Text(
+                        loc,
+                        style: GoogleFonts.inter(fontSize: 14.sp),
+                      ),
+                      trailing: selected
+                          ? Icon(Icons.check, color: colorScheme.primary)
+                          : null,
+                      onTap: () =>
+                          setState(() => _filters['location'] = composed),
+                      contentPadding: EdgeInsets.zero,
+                    );
+                  },
+                ),
+        ),
       ],
     );
   }

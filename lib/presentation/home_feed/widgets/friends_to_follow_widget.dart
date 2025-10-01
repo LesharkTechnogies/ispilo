@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../core/app_export.dart';
-import '../../../widgets/custom_image_widget.dart';
+import '../../../widgets/profile_avatar.dart';
 
 class FriendsToFollowWidget extends StatefulWidget {
   final List<Map<String, dynamic>> suggestions;
@@ -41,7 +40,7 @@ class _FriendsToFollowWidgetState extends State<FriendsToFollowWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            padding: EdgeInsets.symmetric(horizontal: 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -70,7 +69,7 @@ class _FriendsToFollowWidgetState extends State<FriendsToFollowWidget> {
             height: 25.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              padding: EdgeInsets.symmetric(horizontal: 0),
               itemCount: widget.suggestions.length,
               itemBuilder: (context, index) {
                 final suggestion = widget.suggestions[index];
@@ -92,11 +91,10 @@ class _FriendsToFollowWidgetState extends State<FriendsToFollowWidget> {
                     child: Column(
                       children: [
                         ClipOval(
-                          child: CustomImageWidget(
+                          child: ProfileAvatar(
                             imageUrl: suggestion['avatar'] as String? ?? '',
-                            width: 15.w,
-                            height: 15.w,
-                            fit: BoxFit.cover,
+                            size: 15.w.toDouble(),
+                            isOnline: suggestion['isOnline'] as bool? ?? false,
                           ),
                         ),
                         SizedBox(height: 1.h),
@@ -126,7 +124,7 @@ class _FriendsToFollowWidgetState extends State<FriendsToFollowWidget> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const Spacer(),
+                        SizedBox(height: 1.h),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

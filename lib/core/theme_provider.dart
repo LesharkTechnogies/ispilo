@@ -34,7 +34,9 @@ class ThemeProvider extends ChangeNotifier {
       _themeMode = ThemeMode.values[themeModeIndex];
       notifyListeners();
     } catch (e) {
+      // If reading preferences fails, fall back to system theme.
       _themeMode = ThemeMode.system;
+      // swallow intentionally; no further action needed here
     }
   }
 
@@ -44,7 +46,9 @@ class ThemeProvider extends ChangeNotifier {
       _largeTextEnabled = prefs.getBool(_largeTextKey) ?? false;
       notifyListeners();
     } catch (e) {
+      // If reading preferences fails, default to false and continue.
       _largeTextEnabled = false;
+      // swallow intentionally
     }
   }
 
@@ -56,7 +60,9 @@ class ThemeProvider extends ChangeNotifier {
       try {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt(_themeModeKey, mode.index);
-      } catch (e) {}
+      } catch (e) {
+        // ignore storage errors
+      }
     }
   }
 
@@ -67,7 +73,9 @@ class ThemeProvider extends ChangeNotifier {
       try {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool(_largeTextKey, enabled);
-      } catch (e) {}
+      } catch (e) {
+        // ignore storage errors
+      }
     }
   }
 

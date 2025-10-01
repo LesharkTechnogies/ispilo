@@ -20,14 +20,12 @@ class HomeFeed extends StatefulWidget {
 
 class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
-  final RefreshIndicator _refreshIndicator = RefreshIndicator(
-    onRefresh: () async {},
-    child: Container(),
-  );
 
   bool _isLoading = false;
   bool _hasMorePosts = true;
   int _currentBottomIndex = 0;
+  final int _unreadMessagesCount =
+      3; // mock unread count; replace with real data
 
   // Mock data for stories
   final List<Map<String, dynamic>> _stories = [
@@ -339,7 +337,7 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
                       ),
                     ),
                     const Divider(height: 1),
-                    Expanded(
+                    Flexible(
                       child: ListView.builder(
                         controller: scrollCtrl,
                         padding: const EdgeInsets.all(16),
@@ -359,7 +357,7 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
                                       child: Text(c['user'][0]),
                                     ),
                                     const SizedBox(width: 8),
-                                    Expanded(
+                                    Flexible(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -402,7 +400,7 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
                                                             .subdirectory_arrow_right,
                                                         size: 16),
                                                     const SizedBox(width: 6),
-                                                    Expanded(
+                                                    Flexible(
                                                         child: Text(r,
                                                             style: theme
                                                                 .textTheme
@@ -425,7 +423,7 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
                       padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
                       child: Row(
                         children: [
-                          Expanded(
+                          Flexible(
                             child: TextField(
                               controller: inputCtrl,
                               decoration: const InputDecoration(
@@ -614,6 +612,18 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
         variant: CustomAppBarVariant.standard,
         showNotificationBadge: true,
         notificationCount: 3,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/messages');
+            },
+            icon: CustomIconWidget(
+              iconName: '💬',
+              size: 24,
+              badgeCount: _unreadMessagesCount,
+            ),
+          ),
+        ],
       ),
       body: _posts.isEmpty
           ? _buildEmptyState()
@@ -649,8 +659,11 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
                         if (index > 0 &&
                             index % 6 == 0 &&
                             index < _posts.length) {
-                          return FriendsToFollowWidget(
-                            suggestions: _friendSuggestions,
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: FriendsToFollowWidget(
+                              suggestions: _friendSuggestions,
+                            ),
                           );
                         }
 

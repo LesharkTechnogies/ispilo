@@ -19,9 +19,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool _showNewPassword = false;
   bool _showConfirmPassword = false;
 
-  void _toggleOldPassword() => setState(() => _showOldPassword = !_showOldPassword);
-  void _toggleNewPassword() => setState(() => _showNewPassword = !_showNewPassword);
-  void _toggleConfirmPassword() => setState(() => _showConfirmPassword = !_showConfirmPassword);
+  void _toggleOldPassword() =>
+      setState(() => _showOldPassword = !_showOldPassword);
+  void _toggleNewPassword() =>
+      setState(() => _showNewPassword = !_showNewPassword);
+  void _toggleConfirmPassword() =>
+      setState(() => _showConfirmPassword = !_showConfirmPassword);
 
   void _savePassword() {
     if (!_formKey.currentState!.validate()) return;
@@ -49,7 +52,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Old Password', style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
+              Text('Old Password',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
               SizedBox(height: 1.h),
               TextFormField(
                 controller: _oldPasswordCtrl,
@@ -57,14 +61,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 decoration: InputDecoration(
                   hintText: 'Enter old password',
                   suffixIcon: IconButton(
-                    icon: Icon(_showOldPassword ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(_showOldPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                     onPressed: _toggleOldPassword,
                   ),
                 ),
-                validator: (value) => value == null || value.isEmpty ? 'Please enter your old password' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your old password'
+                    : null,
               ),
               SizedBox(height: 2.h),
-              Text('New Password', style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
+              Text('New Password',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
               SizedBox(height: 1.h),
               TextFormField(
                 controller: _newPasswordCtrl,
@@ -72,14 +81,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 decoration: InputDecoration(
                   hintText: 'Enter new password',
                   suffixIcon: IconButton(
-                    icon: Icon(_showNewPassword ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(_showNewPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                     onPressed: _toggleNewPassword,
                   ),
                 ),
-                validator: (value) => value == null || value.isEmpty ? 'Please enter a new password' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter a new password'
+                    : null,
               ),
               SizedBox(height: 2.h),
-              Text('Confirm Password', style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
+              Text('Confirm Password',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
               SizedBox(height: 1.h),
               TextFormField(
                 controller: _confirmPasswordCtrl,
@@ -87,13 +101,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 decoration: InputDecoration(
                   hintText: 'Confirm new password',
                   suffixIcon: IconButton(
-                    icon: Icon(_showConfirmPassword ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(_showConfirmPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                     onPressed: _toggleConfirmPassword,
                   ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Please confirm your new password';
-                  if (value != _newPasswordCtrl.text) return 'Passwords do not match';
+                  if (value == null || value.isEmpty)
+                    return 'Please confirm your new password';
+                  if (value != _newPasswordCtrl.text)
+                    return 'Passwords do not match';
                   return null;
                 },
               ),
@@ -110,7 +128,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text('Save', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                  child: Text('Save',
+                      style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
                 ),
               ),
             ],

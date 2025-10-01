@@ -1,13 +1,49 @@
-# Flutter
+# ISPILO - Social Marketplace Platform
 
-A modern Flutter-based mobile application utilizing the latest mobile development technologies and tools for building responsive cross-platform applications.
+A modern Flutter-based mobile application with Spring Boot backend for a social marketplace platform featuring real-time messaging, product listings, and community engagement.
+
+## 📚 Documentation
+
+### Quick Links
+- **[📖 Documentation Index](./DOCUMENTATION_INDEX.md)** - Complete guide to all documentation
+- **[🔌 Backend API Specification](./BACKEND_API_SPECIFICATION.md)** - REST API contracts and data models
+- **[🚀 Spring Boot Implementation](./SPRING_BOOT_IMPLEMENTATION.md)** - Backend setup with code examples
+- **[🗄️ Database Migrations](./DATABASE_MIGRATIONS.md)** - SQL schemas and Flyway migrations
+- **[📸 Camera & Voice Setup](./CAMERA_VOICE_PERMISSIONS.md)** - Platform permissions configuration
+
+> **New to the project?** Start with the [Documentation Index](./DOCUMENTATION_INDEX.md) for a guided tour!
+
+## 🏗️ Architecture
+
+### Frontend (Flutter)
+- **Framework**: Flutter 3.29.2 with Dart
+- **State Management**: StatefulWidget with local state
+- **Real-time**: WebSocket for live messaging
+- **Offline Support**: SharedPreferences for pending messages
+- **Media Handling**: Camera, voice notes, image picker
+
+### Backend (Spring Boot) - In Development
+- **Framework**: Spring Boot 3.2.0 with Java 17
+- **Database**: MySQL 8.0+ with Flyway migrations
+- **Caching**: Redis for performance
+- **Authentication**: JWT with Spring Security
+- **Real-time**: WebSocket with STOMP
+- **File Storage**: AWS S3 for media
 
 ## 📋 Prerequisites
 
+### Frontend
 - Flutter SDK (^3.29.2)
 - Dart SDK
 - Android Studio / VS Code with Flutter extensions
 - Android SDK / Xcode (for iOS development)
+
+### Backend (When implementing)
+- Java 17+
+- Maven 3.8+
+- MySQL 8.0+ / PostgreSQL 14+
+- Redis
+- AWS S3 account
 
 ## 🛠️ Installation
 

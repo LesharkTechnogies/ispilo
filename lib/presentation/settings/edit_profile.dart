@@ -7,7 +7,6 @@ import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/custom_bottom_bar.dart';
-import '../../widgets/custom_image_widget.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -76,7 +75,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> _pickAvatar() async {
-    final result = await _picker.pickImage(source: ImageSource.gallery, maxWidth: 1024);
+    final result =
+        await _picker.pickImage(source: ImageSource.gallery, maxWidth: 1024);
     if (result != null) {
       setState(() => _avatarPath = result.path);
     }
@@ -128,7 +128,8 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundColor: colorScheme.outline.withValues(alpha: 0.2),
+                      backgroundColor:
+                          colorScheme.outline.withValues(alpha: 0.2),
                       backgroundImage: _avatarPath != null
                           ? FileImage(File(_avatarPath!))
                           : null,
@@ -147,7 +148,8 @@ class _EditProfileState extends State<EditProfile> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           padding: const EdgeInsets.all(6),
-                          child: Icon(Icons.edit, color: colorScheme.onPrimary, size: 18),
+                          child: Icon(Icons.edit,
+                              color: colorScheme.onPrimary, size: 18),
                         ),
                       ),
                     ),
@@ -155,27 +157,26 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               SizedBox(height: 2.h),
-
               TextFormField(
                 controller: _nameCtrl,
                 decoration: const InputDecoration(
                   labelText: 'Full Name',
                 ),
                 textInputAction: TextInputAction.next,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
               SizedBox(height: 1.5.h),
-
               TextFormField(
                 controller: _usernameCtrl,
                 decoration: const InputDecoration(
                   labelText: 'Username',
                 ),
                 textInputAction: TextInputAction.next,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
               SizedBox(height: 1.5.h),
-
               TextFormField(
                 controller: _emailCtrl,
                 decoration: const InputDecoration(
@@ -190,7 +191,6 @@ class _EditProfileState extends State<EditProfile> {
                 },
               ),
               SizedBox(height: 1.5.h),
-
               TextFormField(
                 controller: _phoneCtrl,
                 decoration: const InputDecoration(
@@ -198,10 +198,10 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
-                validator: (v) => (v == null || v.trim().length < 7) ? 'Invalid phone' : null,
+                validator: (v) =>
+                    (v == null || v.trim().length < 7) ? 'Invalid phone' : null,
               ),
               SizedBox(height: 1.5.h),
-
               InkWell(
                 onTap: _pickBirthday,
                 child: InputDecorator(
@@ -223,7 +223,6 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-
               SizedBox(height: 3.h),
               SizedBox(
                 width: double.infinity,
@@ -243,4 +242,4 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
-} 
+}

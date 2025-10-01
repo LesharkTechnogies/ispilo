@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class CategoryChipWidget extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -10,11 +9,11 @@ class CategoryChipWidget extends StatelessWidget {
   final double fontSize;
 
   const CategoryChipWidget({
-  super.key,
-  required this.label,
-  required this.isSelected,
-  required this.onTap,
-  this.fontSize = 12,
+    super.key,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    this.fontSize = 12,
   });
 
   @override

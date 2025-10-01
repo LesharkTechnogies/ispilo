@@ -289,7 +289,7 @@ class _EducationHubState extends State<EducationHub>
             },
             icon: CustomIconWidget(
               iconName: 'notifications_outlined',
-              size: 24.sp,
+              size: 24,
               color: colorScheme.onSurface,
             ),
           ),
@@ -299,7 +299,7 @@ class _EducationHubState extends State<EducationHub>
             },
             icon: CustomIconWidget(
               iconName: 'settings_outlined',
-              size: 24.sp,
+              size: 24,
               color: colorScheme.onSurface,
             ),
           ),

@@ -6,6 +6,8 @@ import '../presentation/education_hub/education_hub.dart';
 import '../presentation/home_feed/home_feed.dart';
 import '../presentation/settings/settings.dart';
 import '../presentation/settings/edit_profile.dart';
+import '../presentation/messages/messages.dart';
+import '../presentation/chat/chat_page.dart';
 
 class AppRoutes {
   // TODO: Add your routes here
@@ -17,6 +19,8 @@ class AppRoutes {
   static const String homeFeed = '/home-feed';
   static const String settings = '/settings';
   static const String editProfile = '/edit-profile';
+  static const String messages = '/messages';
+  static const String chat = '/chat';
 
   static Map<String, WidgetBuilder> routes = {
     initial: (context) => const SplashScreen(),
@@ -27,6 +31,12 @@ class AppRoutes {
     homeFeed: (context) => const HomeFeed(),
     settings: (context) => const Settings(),
     editProfile: (context) => const EditProfile(),
+    messages: (context) => const MessagesPage(),
+    chat: (context) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      return ChatPage(conversation: args ?? {});
+    },
     // TODO: Add your other routes here
   };
 }

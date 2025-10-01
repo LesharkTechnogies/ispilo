@@ -4,13 +4,26 @@ class CustomIconWidget extends StatelessWidget {
   final String iconName;
   final double size;
   final Color? color;
+  final int? badgeCount; // optional unread/count badge
 
-  const CustomIconWidget(
-      {Key? key, required this.iconName, this.size = 24, this.color})
-      : super(key: key);
+  const CustomIconWidget({
+    super.key,
+    required this.iconName,
+    this.size = 24,
+    this.color,
+    this.badgeCount,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Check if iconName is a single emoji character
+    final isEmoji =
+        iconName.length <= 2 && !iconName.contains(RegExp(r'[a-zA-Z_]'));
+
+    if (isEmoji) {
+      return _buildEmojiIcon();
+    }
+
     // Map of available icons
     final Map<String, IconData> iconMap = {
       // A
@@ -1165,7 +1178,7 @@ class CustomIconWidget extends StatelessWidget {
       'menu_open': Icons.menu_open,
       'merge': Icons.merge,
       'merge_type': Icons.merge_type,
-      'message': Icons.message,
+      'message': Icons.chat_bubble_rounded,
       'messenger': Icons.messenger,
       'messenger_outline': Icons.messenger_outline,
       'mic': Icons.mic,
@@ -2168,22 +2181,100 @@ class CustomIconWidget extends StatelessWidget {
       'zoom_out_map': Icons.zoom_out_map,
     };
 
-    // Check if the icon exists
-    if (iconMap.containsKey(iconName)) {
-      return Icon(
-        iconMap[iconName],
-        size: size,
-        color: color,
-        semanticLabel: iconName,
-      );
-    } else {
-      // Return a fallback icon
-      return Icon(
-        Icons.help_outline,
-        size: size,
-        color: Colors.grey,
-        semanticLabel: '$iconName',
+    // Build base icon
+    final baseIcon = Icon(
+      iconMap[iconName] ?? Icons.help_outline,
+      size: size,
+      color: color,
+      semanticLabel: iconName,
+    );
+
+    // If badgeCount is provided, show based on it; otherwise listen to global service.
+    final effectiveBadge = badgeCount;
+
+    Widget buildWithCount(int? c) {
+      if (c == null || c <= 0) return baseIcon;
+
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          baseIcon,
+          Positioned(
+            right: -6,
+            top: -6,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              child: Center(
+                child: Text(
+                  c > 99 ? '99+' : c.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: (size * 0.4).clamp(8, 12),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
+
+    // Only show badge if explicitly provided via badgeCount parameter
+    return buildWithCount(effectiveBadge);
+  }
+
+  Widget _buildEmojiIcon() {
+    final baseEmoji = Text(
+      iconName,
+      style: TextStyle(
+        fontSize: size,
+        height: 1.0,
+      ),
+    );
+
+    final effectiveBadge = badgeCount;
+
+    Widget buildWithCount(int? c) {
+      if (c == null || c <= 0) return baseEmoji;
+
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          baseEmoji,
+          Positioned(
+            right: -6,
+            top: -6,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              child: Center(
+                child: Text(
+                  c > 99 ? '99+' : c.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: (size * 0.4).clamp(8, 12),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return buildWithCount(effectiveBadge);
   }
 }

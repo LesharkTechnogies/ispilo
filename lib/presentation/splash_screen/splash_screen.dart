@@ -279,7 +279,7 @@ class _SplashScreenState extends State<SplashScreen>
                                               color: AppTheme.lightTheme
                                                   .colorScheme.primary,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: min(48.sp, 48),
+                                              fontSize: 48,
                                             ),
                                       ),
                                     ),
@@ -294,7 +294,7 @@ class _SplashScreenState extends State<SplashScreen>
                                         ?.copyWith(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: min(32.sp, 32),
+                                          fontSize: 32,
                                           letterSpacing: 2,
                                         ),
                                   ),
@@ -308,7 +308,7 @@ class _SplashScreenState extends State<SplashScreen>
                                         ?.copyWith(
                                           color: Colors.white
                                               .withValues(alpha: 0.9),
-                                          fontSize: min(16.sp, 16),
+                                          fontSize: 16,
                                           letterSpacing: 1,
                                         ),
                                   ),
@@ -322,8 +322,8 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
 
                   // Loading section
-                  Expanded(
-                    flex: 1,
+                  SizedBox(
+                    height: 20.h,
                     child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -343,12 +343,12 @@ class _SplashScreenState extends State<SplashScreen>
                                   .titleMedium
                                   ?.copyWith(
                                     color: Colors.white,
-                                    fontSize: 16.sp,
+                                    fontSize: 16,
                                   ),
                             ),
                             SizedBox(height: 1.h),
                             Text(
-                              'Retrying... (${_retryCount}/$_maxRetries)',
+                              'Retrying... ($_retryCount/$_maxRetries)',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -378,7 +378,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   .bodyMedium
                                   ?.copyWith(
                                     color: Colors.white.withValues(alpha: 0.9),
-                                    fontSize: 14.sp,
+                                    fontSize: 16,
                                   ),
                             ),
                           ],
@@ -406,7 +406,7 @@ class _SplashScreenState extends State<SplashScreen>
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: Colors.white.withValues(alpha: 0.5),
-                                    fontSize: 10.sp,
+                                    fontSize: 12,
                                   ),
                         ),
                       ],

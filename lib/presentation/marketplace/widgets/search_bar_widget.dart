@@ -13,12 +13,12 @@ class SearchBarWidget extends StatelessWidget {
   final double fontSize;
 
   const SearchBarWidget({
-  super.key,
-  required this.controller,
-  required this.onChanged,
-  required this.onFilterTap,
-  this.hintText = 'Search products...',
-  this.fontSize = 14,
+    super.key,
+    required this.controller,
+    required this.onChanged,
+    required this.onFilterTap,
+    this.hintText = 'Search products...',
+    this.fontSize = 14,
   });
 
   @override

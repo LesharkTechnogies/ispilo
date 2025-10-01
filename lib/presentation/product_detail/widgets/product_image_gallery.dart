@@ -21,7 +21,6 @@ class ProductImageGallery extends StatefulWidget {
 class _ProductImageGalleryState extends State<ProductImageGallery> {
   late PageController _pageController;
   int _currentIndex = 0;
-  bool _isFullScreen = false;
 
   @override
   void initState() {
@@ -40,7 +39,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Container(
+    return SizedBox(
       height: 85.w,
       width: double.infinity,
       child: Stack(
@@ -182,8 +181,7 @@ class _FullScreenGalleryState extends State<_FullScreenGallery> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    // full-screen build doesn't need local theme/colorScheme here
 
     return Scaffold(
       backgroundColor: Colors.black,

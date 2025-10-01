@@ -101,7 +101,7 @@ class QuickActionsWidget extends StatelessWidget {
             children: [
               _buildActionButton(
                 context,
-                icon: 'favorite_border',
+                iconName: 'favorite_border',
                 label: 'Save to Favorites',
                 onTap: () {
                   HapticFeedback.lightImpact();
@@ -113,7 +113,7 @@ class QuickActionsWidget extends StatelessWidget {
               SizedBox(height: 1.h),
               _buildActionButton(
                 context,
-                icon: 'share',
+                iconName: 'share',
                 label: 'Share Product',
                 onTap: () {
                   HapticFeedback.lightImpact();
@@ -125,7 +125,7 @@ class QuickActionsWidget extends StatelessWidget {
               SizedBox(height: 1.h),
               _buildActionButton(
                 context,
-                icon: 'message',
+                iconName: 'message',
                 label: 'Contact Seller',
                 onTap: () {
                   HapticFeedback.lightImpact();
@@ -145,7 +145,7 @@ class QuickActionsWidget extends StatelessWidget {
 
   Widget _buildActionButton(
     BuildContext context, {
-    required String icon,
+    required String iconName,
     required String label,
     required VoidCallback onTap,
     required ColorScheme colorScheme,
@@ -166,7 +166,7 @@ class QuickActionsWidget extends StatelessWidget {
           children: [
             SizedBox(width: 4.w),
             CustomIconWidget(
-              iconName: icon,
+              iconName: iconName,
               color: colorScheme.onSurface,
               size: 24,
             ),

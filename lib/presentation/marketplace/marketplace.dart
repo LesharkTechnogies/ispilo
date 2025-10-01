@@ -280,7 +280,7 @@ class _MarketplaceState extends State<Marketplace> {
   }
 
   void _onProductTap(Map<String, dynamic> product) {
-    // Add to recently viewed
+    // Add to recently viewed and sort by most recent
     setState(() {
       _recentlyViewed.removeWhere((p) => p["id"] == product["id"]);
       _recentlyViewed.insert(0, product);
@@ -288,7 +288,7 @@ class _MarketplaceState extends State<Marketplace> {
         _recentlyViewed = _recentlyViewed.take(5).toList();
       }
     });
-
+    // Already sorted by most recent due to insert(0, ...)
     Navigator.pushNamed(context, '/product-detail', arguments: product);
   }
 
@@ -373,7 +373,6 @@ class _MarketplaceState extends State<Marketplace> {
               onChanged: _onSearchChanged,
               onFilterTap: _showFilterBottomSheet,
               hintText: 'Search products...',
-              fontSize: 10.sp,
             ),
 
             // Category Chips
@@ -390,7 +389,6 @@ class _MarketplaceState extends State<Marketplace> {
                     label: category,
                     isSelected: _selectedCategory == category,
                     onTap: () => _onCategorySelected(category),
-                    fontSize: 9.sp,
                   );
                 },
               ),
@@ -412,7 +410,9 @@ class _MarketplaceState extends State<Marketplace> {
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
-                                childAspectRatio: 0.75,
+                                // increase aspect ratio so each grid item is wider and therefore shorter
+                                // tuned up to make cards appear more compact vertically
+                                childAspectRatio: 1.25,
                                 crossAxisSpacing: 2.w,
                                 mainAxisSpacing: 2.w,
                               ),
@@ -465,7 +465,7 @@ class _MarketplaceState extends State<Marketplace> {
                             'No more products to load',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.inter(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               color:
                                   colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
@@ -490,15 +490,16 @@ class _MarketplaceState extends State<Marketplace> {
               icon: CustomIconWidget(
                 iconName: 'add',
                 color: colorScheme.onPrimary,
-                size: 20,
+                size: 16,
               ),
               label: Text(
-                'Sell Something',
+                'Sell',
                 style: GoogleFonts.inter(
-                  fontSize: 12.sp,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              elevation: 4,
             ),
 
       bottomNavigationBar: const CustomBottomBar(
@@ -523,7 +524,7 @@ class _MarketplaceState extends State<Marketplace> {
             Text(
               'No products found',
               style: GoogleFonts.inter(
-                fontSize: 16.sp,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
@@ -532,7 +533,7 @@ class _MarketplaceState extends State<Marketplace> {
             Text(
               'Try adjusting your search or filters',
               style: GoogleFonts.inter(
-                fontSize: 12.sp,
+                fontSize: 14,
                 color: colorScheme.onSurface.withValues(alpha: 0.5),
               ),
               textAlign: TextAlign.center,
@@ -548,7 +549,7 @@ class _MarketplaceState extends State<Marketplace> {
               child: Text(
                 'Clear all filters',
                 style: GoogleFonts.inter(
-                  fontSize: 12.sp,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: colorScheme.primary,
                 ),
