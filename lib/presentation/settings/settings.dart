@@ -14,6 +14,7 @@ import './widgets/settings_section_widget.dart';
 import './widgets/settings_switch_widget.dart';
 import './widgets/settings_tile_widget.dart';
 import 'change_password.dart';
+import '../home_feed/mock_data.dart' show kCurrentUser;
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -49,16 +50,8 @@ class _SettingsState extends State<Settings> {
 
   final LocalAuthentication _localAuth = LocalAuthentication();
 
-  // Mock user data
-  final Map<String, dynamic> _userProfile = {
-    "name": "Collins muthomi",
-    "email": "lesharkTechnologies@gmail.com",
-    "avatar":
-        "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400",
-    "role": "Network Engineer",
-    "verified": true,
-    "joinDate": "september 2025",
-  };
+  // Use shared current user profile from mock data
+  Map<String, dynamic> get _userProfile => kCurrentUser;
 
   @override
   void initState() {
@@ -387,97 +380,301 @@ class _SettingsState extends State<Settings> {
 
   Widget _buildProfileHeader() {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    final url = _userProfile['avatar'] as String? ?? '';
-                    if (url.isEmpty) return;
-                    showDialog(
-                      context: context,
-                      builder: (_) =>
-                          FullScreenImageViewer(imageUrl: url, heroTag: url),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Hero(
-                      tag:
-                          _userProfile['avatar'] as String? ?? 'profile_avatar',
-                      child: CustomImageWidget(
-                        imageUrl: _userProfile['avatar'],
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+    return Column(
+      children: [
+        // Cover Image
+        if (_userProfile['coverImage'] != null)
+          GestureDetector(
+            onTap: () {
+              final url = _userProfile['coverImage'] as String? ?? '';
+              if (url.isEmpty) return;
+              showDialog(
+                context: context,
+                builder: (_) =>
+                    FullScreenImageViewer(imageUrl: url, heroTag: 'cover_$url'),
+              );
+            },
+            child: Container(
+              height: 20.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest,
+              ),
+              child: Hero(
+                tag: 'cover_${_userProfile['coverImage']}',
+                child: CustomImageWidget(
+                  imageUrl: _userProfile['coverImage'],
+                  width: double.infinity,
+                  height: 20.h,
+                  fit: BoxFit.cover,
                 ),
-                if (_userProfile['verified'] == true)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: theme.colorScheme.surface,
-                          width: 2,
+              ),
+            ),
+          ),
+
+        // Profile Card
+        Transform.translate(
+          offset: Offset(0, _userProfile['coverImage'] != null ? -30 : 0),
+          child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(4.w, 4.w, 4.w, 2.h),
+              child: Column(
+                children: [
+                  // Avatar and Edit Button Row
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Avatar
+                      Stack(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              final url = _userProfile['avatar'] as String? ?? '';
+                              if (url.isEmpty) return;
+                              showDialog(
+                                context: context,
+                                builder: (_) => FullScreenImageViewer(
+                                    imageUrl: url, heroTag: 'avatar_$url'),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: colorScheme.surface,
+                                  width: 4,
+                                ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40),
+                                child: Hero(
+                                  tag: 'avatar_${_userProfile['avatar']}',
+                                  child: CustomImageWidget(
+                                    imageUrl: _userProfile['avatar'],
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (_userProfile['verified'] == true)
+                            Positioned(
+                              bottom: 2,
+                              right: 2,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: colorScheme.surface,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: CustomIconWidget(
+                                  iconName: 'check',
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const Spacer(),
+                      // Edit Profile Button
+                      OutlinedButton.icon(
+                        onPressed: _handleEditProfile,
+                        icon: CustomIconWidget(
+                          iconName: 'edit',
+                          color: colorScheme.primary,
+                          size: 18,
+                        ),
+                        label: Text(
+                          'Edit Profile',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: colorScheme.primary),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 4.w,
+                            vertical: 1.h,
+                          ),
                         ),
                       ),
-                      child: CustomIconWidget(
-                        iconName: 'check',
-                        color: Colors.white,
-                        size: 12,
+                    ],
+                  ),
+
+                  SizedBox(height: 2.h),
+
+                  // Name and Username
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _userProfile['name'],
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 0.5.h),
+                        Text(
+                          '@${_userProfile['username']}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 1.5.h),
+
+                  // Bio
+                  if (_userProfile['bio'] != null)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _userProfile['bio'],
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          height: 1.4,
+                        ),
                       ),
                     ),
+
+                  SizedBox(height: 1.5.h),
+
+                  // Info Row (Company, Location, Website, Join Date)
+                  Wrap(
+                    spacing: 3.w,
+                    runSpacing: 1.h,
+                    children: [
+                      if (_userProfile['company'] != null)
+                        _buildInfoChip(
+                          icon: 'business',
+                          text: _userProfile['company'],
+                          theme: theme,
+                        ),
+                      if (_userProfile['location'] != null)
+                        _buildInfoChip(
+                          icon: 'location_on',
+                          text: _userProfile['location'],
+                          theme: theme,
+                        ),
+                      if (_userProfile['website'] != null)
+                        _buildInfoChip(
+                          icon: 'link',
+                          text: _userProfile['website'],
+                          theme: theme,
+                          isLink: true,
+                        ),
+                      _buildInfoChip(
+                        icon: 'calendar_today',
+                        text: 'Joined ${_userProfile['joinDate']}',
+                        theme: theme,
+                      ),
+                    ],
                   ),
-              ],
-            ),
-            SizedBox(width: 4.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _userProfile['name'],
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    _userProfile['email'],
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  Text(
-                    '${_userProfile['role']} • Member since ${_userProfile['joinDate']}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
+
+                  SizedBox(height: 2.h),
+
+                  // Stats Row (Followers, Following, Posts, Connections)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildStatColumn(
+                        count: _userProfile['posts'] ?? 0,
+                        label: 'Posts',
+                        theme: theme,
+                      ),
+                      _buildStatColumn(
+                        count: _userProfile['followers'] ?? 0,
+                        label: 'Followers',
+                        theme: theme,
+                      ),
+                      _buildStatColumn(
+                        count: _userProfile['following'] ?? 0,
+                        label: 'Following',
+                        theme: theme,
+                      ),
+                      _buildStatColumn(
+                        count: _userProfile['connections'] ?? 0,
+                        label: 'Connections',
+                        theme: theme,
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            CustomIconWidget(
-              iconName: 'edit',
-              color: theme.colorScheme.primary,
-              size: 24,
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildInfoChip({
+    required String icon,
+    required String text,
+    required ThemeData theme,
+    bool isLink = false,
+  }) {
+    final colorScheme = theme.colorScheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomIconWidget(
+          iconName: icon,
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
+          size: 16,
+        ),
+        SizedBox(width: 1.w),
+        Text(
+          text,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: isLink
+                ? colorScheme.primary
+                : colorScheme.onSurface.withValues(alpha: 0.7),
+            decoration: isLink ? TextDecoration.underline : null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatColumn({
+    required int count,
+    required String label,
+    required ThemeData theme,
+  }) {
+    return Column(
+      children: [
+        Text(
+          count >= 1000
+              ? '${(count / 1000).toStringAsFixed(1)}K'
+              : count.toString(),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 0.5.h),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
+      ],
     );
   }
 
@@ -497,11 +694,9 @@ class _SettingsState extends State<Settings> {
 
           return ListView(
             children: [
-              GestureDetector(
-                onTap: _handleEditProfile,
-                child: _buildProfileHeader(),
-              ),
-              SizedBox(height: 2.h),
+              _buildProfileHeader(),
+              
+              SizedBox(height: 1.h),
               SettingsSectionWidget(
                 title: 'Privacy & Security',
                 children: [

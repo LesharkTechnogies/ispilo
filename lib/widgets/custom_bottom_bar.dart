@@ -261,43 +261,41 @@ class _CustomBottomBarState extends State<CustomBottomBar>
                     index == widget.currentIndex ? _scaleAnimation.value : 1.0,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Flexible(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? selectedColor.withAlpha(26)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            isSelected ? item.activeIcon : item.icon,
-                            color: isSelected ? selectedColor : unselectedColor,
-                            size: 16,
-                          ),
+                  // Flexible is not valid here because its parent is not a Flex (Row/Column).
+                  // Use Column directly and let the surrounding Expanded control sizing.
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? selectedColor.withAlpha(26)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        if (widget.showLabels) ...[
-                          const SizedBox(height: 0),
-                          AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: isSelected
-                                  ? FontWeight.w500
-                                  : FontWeight.w400,
-                              color:
-                                  isSelected ? selectedColor : unselectedColor,
-                            ),
-                            child: Text(item.label),
+                        child: Icon(
+                          isSelected ? item.activeIcon : item.icon,
+                          color: isSelected ? selectedColor : unselectedColor,
+                          size: 16,
+                        ),
+                      ),
+                      if (widget.showLabels) ...[
+                        const SizedBox(height: 0),
+                        AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight:
+                                isSelected ? FontWeight.w500 : FontWeight.w400,
+                            color: isSelected ? selectedColor : unselectedColor,
                           ),
-                        ],
+                          child: Text(item.label),
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
               );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
-import 'package:google_fonts/google_fonts.dart';
+// Use theme text styles instead of per-build GoogleFonts calls to reduce allocations.
 import 'dart:math' as math;
 
 import '../../../core/app_export.dart';
@@ -22,6 +22,28 @@ class ProductCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    // Cache styles per-build (cheap) instead of calling GoogleFonts repeatedly.
+    final TextStyle titleStyle = theme.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w500,
+          color: colorScheme.onSurface,
+          fontSize: 11,
+        ) ??
+        TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: colorScheme.onSurface);
+
+    final TextStyle priceStyle = theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: colorScheme.primary,
+          fontSize: 13,
+        ) ??
+        TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.primary);
+
+    final TextStyle metaStyle = theme.textTheme.bodySmall?.copyWith(
+          fontSize: 11,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurface.withValues(alpha: 0.7),
+        ) ??
+        TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: colorScheme.onSurface.withValues(alpha: 0.7));
 
     return GestureDetector(
       onTap: () {
@@ -94,22 +116,14 @@ class ProductCardWidget extends StatelessWidget {
                       children: [
                         Text(
                           product["title"] as String,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: colorScheme.onSurface,
-                          ),
+                          style: titleStyle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 0.3.h),
                         Text(
                           product["price"] as String,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: colorScheme.primary,
-                          ),
+                          style: priceStyle,
                         ),
                         SizedBox(height: 0.2.h),
                         Row(
@@ -122,12 +136,7 @@ class ProductCardWidget extends StatelessWidget {
                             SizedBox(width: 0.6.w),
                             Text(
                               product["rating"].toString(),
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w400,
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.7),
-                              ),
+                              style: metaStyle,
                             ),
                             const Spacer(),
                             CustomIconWidget(
@@ -137,15 +146,10 @@ class ProductCardWidget extends StatelessWidget {
                               size: 12,
                             ),
                             SizedBox(width: 0.8.w),
-                            Expanded(
+                            Flexible(
                               child: Text(
                                 product["location"] as String,
-                                style: GoogleFonts.inter(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  color: colorScheme.onSurface
-                                      .withValues(alpha: 0.7),
-                                ),
+                                style: metaStyle.copyWith(fontSize: 10),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),

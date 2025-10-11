@@ -140,3 +140,34 @@ flutter build apk --release
 flutter build ios --release
 ```
 
+## 🔁 Replacing the app launcher icon (quick)
+
+1. Copy your PNG into the project:
+
+```powershell
+Copy-Item C:\Users\Admin\Downloads\Ispilo.png assets\images\Ispilo.png
+```
+
+2. (Optional) Create a white-background padded icon using the included Dart script:
+
+```powershell
+dart pub add image
+dart run tooling\create_padded_icon.dart
+```
+
+3. Generate platform icons (uses flutter_launcher_icons configured in `pubspec.yaml`):
+
+```powershell
+flutter pub get
+flutter pub run flutter_launcher_icons:main
+```
+
+4. Rebuild the app:
+
+```powershell
+flutter clean; flutter pub get; flutter build apk --release
+```
+
+If you prefer to use the unpadded image, open `pubspec.yaml` and set `flutter_icons.image_path` to `assets/images/Ispilo.png` before running the generator.
+
+

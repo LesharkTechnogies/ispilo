@@ -37,7 +37,7 @@ class ProfileAvatar extends StatelessWidget {
                   ? Icon(
                       Icons.account_circle,
                       size: size,
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: theme.colorScheme.onSurface.withAlpha((0.6 * 255).round()),
                     )
                   : Image.network(
                       imageUrl!,
@@ -47,7 +47,7 @@ class ProfileAvatar extends StatelessWidget {
                       errorBuilder: (context, error, stack) => Icon(
                         Icons.account_circle,
                         size: size,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withAlpha((0.6 * 255).round()),
                       ),
                     ),
             ),

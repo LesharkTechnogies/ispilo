@@ -4,11 +4,10 @@ import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/app_export.dart';
-import '../../../core/services/seller_service.dart';
-import '../../../core/services/conversation_service.dart';
-import '../../../core/models/seller.dart';
 import '../../../widgets/profile_avatar.dart';
 import '../../../widgets/fullscreen_image_viewer.dart';
+import '../../chat/chat_page.dart';
+import '../mock_data.dart' show getUserByUsername, kMessages, markConversationRead;
 
 class PostCardWidget extends StatefulWidget {
   final Map<String, dynamic> post;
@@ -263,6 +262,11 @@ class _PostCardWidgetState extends State<PostCardWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    // Cache commonly used TextStyle to avoid multiple GoogleFonts calls
+    final titleStyle = theme.textTheme.titleSmall?.copyWith(
+      fontWeight: FontWeight.w600,
+    );
+    final bodyStyle = theme.textTheme.bodyMedium;
     final username = widget.post['username'] as String? ?? 'Unknown User';
     final timestamp = widget.post['timestamp'] as String? ?? '1h ago';
     final description = widget.post['content'] as String? ??
@@ -312,12 +316,10 @@ class _PostCardWidgetState extends State<PostCardWidget> {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            username,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                              Text(
+                                username,
+                                style: titleStyle,
+                              ),
                           if (widget.post['isVerified'] as bool? ?? false) ...[
                             SizedBox(width: 1.w),
                             Icon(
@@ -374,11 +376,11 @@ class _PostCardWidgetState extends State<PostCardWidget> {
             Padding(
               padding:
                   EdgeInsets.symmetric(horizontal: 3.w).copyWith(bottom: 2.h),
-              child: Text(
+                child: Text(
                 showLearnMore || description.length <= 200
                     ? description
                     : '${description.substring(0, 200)}...',
-                style: theme.textTheme.bodyMedium,
+                style: bodyStyle,
               ),
             ),
 
@@ -480,58 +482,53 @@ class _PostCardWidgetState extends State<PostCardWidget> {
                     SizedBox(width: 4.w),
                     // Message the post owner privately
                     GestureDetector(
-                      onTap: () async {
+                      onTap: () {
                         HapticFeedback.lightImpact();
-
-                        final userId =
-                            (widget.post['userId'] ?? widget.post['user_id'])
-                                    ?.toString() ??
-                                '';
-                        if (userId.isEmpty) return;
-
-                        // Show a simple loading dialog while we fetch or create seller data
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) =>
-                              const Center(child: CircularProgressIndicator()),
-                        );
-
-                        final Map<String, dynamic> sellerMap =
-                            (widget.post['seller'] as Map<String, dynamic>?) ??
-                                {
-                                  'name': widget.post['username'] as String? ??
-                                      'User',
-                                  'avatar':
-                                      widget.post['userAvatar'] as String? ??
-                                          '',
-                                };
-
-                        String? explicitSellerId = sellerMap['id'] as String?;
-                        Seller seller;
-                        if (explicitSellerId != null &&
-                            explicitSellerId.isNotEmpty) {
-                          final existing = await SellerService.instance
-                              .getSellerById(explicitSellerId);
-                          seller = existing ??
-                              await SellerService.instance
-                                  .upsertSellerFromMap(sellerMap);
-                        } else {
-                          seller = await SellerService.instance
-                              .upsertSellerFromMap(sellerMap);
+                        
+                        final username = widget.post['username'] as String? ?? '';
+                        if (username.isEmpty) return;
+                        
+                        // Get user from unified mock data
+                        final user = getUserByUsername(username);
+                        if (user == null) {
+                          // Show error if user not found
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('User not found'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
                         }
-
-                        final conversation = await ConversationService.instance
-                            .getOrCreateConversation(
-                          sellerId: seller.id,
-                          sellerName: seller.name,
-                          sellerAvatar: seller.avatar,
+                        
+                        final userId = user['id'] as int;
+                        
+                        // Mark conversation as read
+                        markConversationRead(userId);
+                        
+                        // Create conversation object
+                        final conversation = {
+                          'id': userId,
+                          'userId': userId,
+                          'name': user['name'],
+                          'avatar': user['avatar'],
+                          'lastMessage': kMessages[userId]?.last['text'] ?? '',
+                          'timestamp': kMessages[userId]?.last['timestamp'] ?? 'Now',
+                          'isOnline': user['isOnline'],
+                          'unreadCount': 0,
+                          'isVerified': user['isVerified'] ?? false,
+                        };
+                        
+                        // Navigate to ChatPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              conversation: conversation,
+                              initialMessages: kMessages[userId],
+                            ),
+                          ),
                         );
-
-                        Navigator.pop(context); // close loading
-
-                        Navigator.pushNamed(context, AppRoutes.chat,
-                            arguments: conversation);
                       },
                       child: CustomIconWidget(
                         iconName: '💬',

@@ -299,8 +299,9 @@ Ideal for ISP deployments, corporate networks, and data center edge applications
                                         setState(() {
                                           _hudError = null;
                                         });
-                                        if (_hudRetryAction != null)
+                                        if (_hudRetryAction != null) {
                                           _hudRetryAction!.call();
+                                        }
                                       },
                                       child: const Text('Retry'),
                                     ),
@@ -522,7 +523,13 @@ Ideal for ISP deployments, corporate networks, and data center edge applications
       sellerAvatar: seller.avatar,
     );
 
-    Navigator.pushNamed(context, AppRoutes.chat, arguments: conversation);
+    if (!mounted) return;
+    
+    // Capture Navigator after mounted check to avoid use_build_context_synchronously
+    final navigator = Navigator.of(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      navigator.pushNamed(AppRoutes.chat, arguments: conversation);
+    });
   }
 
   Future<void> _callSellerWithSeller() async {
@@ -566,6 +573,7 @@ Ideal for ISP deployments, corporate networks, and data center edge applications
     final normalized = _normalizePhone(rawPhone, seller.countryCode);
 
     _setLoading(false); // clear HUD before showing confirmation
+    if (!mounted) return;
 
     showDialog(
       context: context,
@@ -631,6 +639,7 @@ Ideal for ISP deployments, corporate networks, and data center edge applications
     final uri = Uri.parse('https://wa.me/$normalized');
 
     _setLoading(false);
+    if (!mounted) return;
 
     // show confirmation
     showDialog(
@@ -644,9 +653,10 @@ Ideal for ISP deployments, corporate networks, and data center edge applications
               child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () async {
+              final scaffold = ScaffoldMessenger.of(context);
               Navigator.pop(context);
               if (!await canLaunchUrl(uri)) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                scaffold.showSnackBar(
                   const SnackBar(
                     content: Text('Could not open WhatsApp.'),
                     duration: Duration(seconds: 2),

@@ -6,10 +6,10 @@ import 'package:sizer/sizer.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_bottom_bar.dart';
-import '../../widgets/custom_icon_widget.dart';
 import './widgets/friends_to_follow_widget.dart';
 import './widgets/post_card_widget.dart';
 import './widgets/story_item_widget.dart';
+import 'mock_data.dart' show kStories, kPosts, kFriendSuggestions, getUserById, getUserPosts;
 
 class HomeFeed extends StatefulWidget {
   const HomeFeed({super.key});
@@ -27,183 +27,12 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
   final int _unreadMessagesCount =
       3; // mock unread count; replace with real data
 
-  // Mock data for stories
-  final List<Map<String, dynamic>> _stories = [
-    {
-      "id": 1,
-      "username": "Your Story",
-      "avatar":
-          "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "isViewed": false,
-      "isOwn": true,
-    },
-    {
-      "id": 2,
-      "username": "alex_network",
-      "avatar":
-          "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "isViewed": false,
-    },
-    {
-      "id": 3,
-      "username": "sarah_tech",
-      "avatar":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "isViewed": true,
-    },
-    {
-      "id": 4,
-      "username": "mike_admin",
-      "avatar":
-          "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "isViewed": false,
-    },
-    {
-      "id": 5,
-      "username": "lisa_isp",
-      "avatar":
-          "https://images.pexels.com/photos/1239288/pexels-photo-1239288.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "isViewed": true,
-    },
-  ];
-
-  // Mock data for posts
-  final List<Map<String, dynamic>> _posts = [
-    {
-      "id": 1,
-      "username": "alex_network",
-      "userAvatar":
-          "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "timestamp": "2 hours ago",
-      "content":
-          "Just finished setting up a new fiber network for our community! The speeds are incredible - 1Gbps up and down. ISP life is rewarding when you see the impact on people's daily lives. 🚀",
-      "imageUrl":
-          "https://images.pexels.com/photos/159304/network-cable-ethernet-computer-159304.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "likes": 42,
-      "comments": 8,
-      "isLiked": false,
-      "isSaved": false,
-      "isSponsored": false,
-      "hasVerification": true,
-    },
-    {
-      "id": 2,
-      "username": "sarah_tech",
-      "userAvatar":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "timestamp": "4 hours ago",
-      "content":
-          "Excited to share my latest certification in network security! Always learning and growing in this field. What certifications are you working on?",
-      "likes": 28,
-      "comments": 12,
-      "isLiked": true,
-      "isSaved": false,
-      "isSponsored": false,
-      "hasVerification": false,
-    },
-    {
-      "id": 3,
-      "username": "cisco_learning",
-      "userAvatar":
-          "https://images.pixabay.com/photo/2016/12/27/13/10/logo-1933884_1280.png",
-      "timestamp": "6 hours ago",
-      "content":
-          "Master the fundamentals of network routing and switching with our comprehensive CCNA course. Join thousands of professionals who have advanced their careers.",
-      "imageUrl":
-          "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "likes": 156,
-      "comments": 23,
-      "isLiked": false,
-      "isSaved": true,
-      "isSponsored": true,
-      "hasVerification": true,
-      "ctaButtons": ["Learn More", "Enroll Now"],
-    },
-    {
-      "id": 4,
-      "username": "mike_admin",
-      "userAvatar":
-          "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "timestamp": "8 hours ago",
-      "content":
-          "Server maintenance completed successfully! Zero downtime migration to our new data center. Proud of the team's coordination and planning.",
-      "likes": 67,
-      "comments": 15,
-      "isLiked": false,
-      "isSaved": false,
-      "isSponsored": false,
-      "hasVerification": false,
-    },
-    {
-      "id": 5,
-      "username": "lisa_isp",
-      "userAvatar":
-          "https://images.pexels.com/photos/1239288/pexels-photo-1239288.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "timestamp": "10 hours ago",
-      "content":
-          "Customer satisfaction survey results are in - 98% satisfaction rate! Thank you to everyone who participated. Your feedback helps us improve our services.",
-      "likes": 89,
-      "comments": 31,
-      "isLiked": true,
-      "isSaved": false,
-      "isSponsored": false,
-      "hasVerification": false,
-    },
-    {
-      "id": 6,
-      "username": "netgear_pro",
-      "userAvatar":
-          "https://images.pixabay.com/photo/2017/03/12/02/57/logo-2136735_1280.png",
-      "timestamp": "12 hours ago",
-      "content":
-          "Upgrade your network infrastructure with our latest Wi-Fi 6E routers. Experience blazing fast speeds and reduced latency for your business operations.",
-      "imageUrl":
-          "https://images.pexels.com/photos/4219654/pexels-photo-4219654.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "likes": 203,
-      "comments": 45,
-      "isLiked": false,
-      "isSaved": false,
-      "isSponsored": true,
-      "hasVerification": true,
-      "ctaButtons": ["Shop Now"],
-    },
-  ];
+  // Use shared mock data to avoid allocating large lists repeatedly.
+  final List<Map<String, dynamic>> _stories = kStories;
+  final List<Map<String, dynamic>> _posts = kPosts;
 
   // Mock data for friend suggestions
-  final List<Map<String, dynamic>> _friendSuggestions = [
-    {
-      "id": 101,
-      "name": "David Chen",
-      "avatar":
-          "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "role": "Network Engineer",
-      "mutualFriends": 5,
-    },
-    {
-      "id": 102,
-      "name": "Emma Wilson",
-      "avatar":
-          "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "role": "ISP Manager",
-      "mutualFriends": 3,
-    },
-    {
-      "id": 103,
-      "name": "James Rodriguez",
-      "avatar":
-          "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "role": "System Admin",
-      "mutualFriends": 8,
-    },
-    {
-      "id": 104,
-      "name": "Sophie Taylor",
-      "avatar":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "role": "Tech Support",
-      "mutualFriends": 2,
-    },
-  ];
+  final List<Map<String, dynamic>> _friendSuggestions = kFriendSuggestions;
 
   @override
   void initState() {
@@ -258,12 +87,33 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
 
   void _handleStoryTap(Map<String, dynamic> story) {
     HapticFeedback.lightImpact();
-    // Navigate to story viewer or camera for own story
+    
+    // If it's "Your Story", open camera/story creator
     if (story['isOwn'] == true) {
       // Open camera for creating story
-    } else {
-      // Open story viewer
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Story creator coming soon!')),
+      );
+      return;
     }
+
+    // Otherwise, navigate to that user's profile/posts
+    final userId = story['userId'] as int?;
+    if (userId == null) return;
+
+    final user = getUserById(userId);
+    if (user == null) return;
+
+    // Navigate to a simple page showing that user's posts
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserPostsPage(
+          user: user,
+          posts: getUserPosts(userId),
+        ),
+      ),
+    );
   }
 
   void _handlePostLike(Map<String, dynamic> post) {
@@ -717,6 +567,123 @@ class _HomeFeedState extends State<HomeFeed> with TickerProviderStateMixin {
           size: 28,
         ),
       ),
+    );
+  }
+}
+
+// Simple page showing a specific user's posts
+class UserPostsPage extends StatelessWidget {
+  final Map<String, dynamic> user;
+  final List<Map<String, dynamic>> posts;
+
+  const UserPostsPage({
+    super.key,
+    required this.user,
+    required this.posts,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1877F2),
+        elevation: 1,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+        ),
+        title: Row(
+          children: [
+            ClipOval(
+              child: CustomImageWidget(
+                imageUrl: user['avatar'] as String,
+                width: 10.w,
+                height: 10.w,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        user['name'] as String,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (user['isVerified'] == true) ...[
+                        SizedBox(width: 1.w),
+                        const Icon(Icons.verified, color: Colors.white, size: 16),
+                      ],
+                    ],
+                  ),
+                  Text(
+                    '@${user['username']}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: posts.isEmpty
+          ? Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.article_outlined,
+                      size: 64,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'No posts yet',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                return PostCardWidget(
+                  post: posts[index],
+                  onLike: () {
+                    HapticFeedback.lightImpact();
+                  },
+                  onComment: () {
+                    HapticFeedback.lightImpact();
+                  },
+                  onShare: () {
+                    HapticFeedback.lightImpact();
+                  },
+                  onSave: () {
+                    HapticFeedback.lightImpact();
+                  },
+                  onReport: () {
+                    HapticFeedback.mediumImpact();
+                  },
+                );
+              },
+            ),
     );
   }
 }

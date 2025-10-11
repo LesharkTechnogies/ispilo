@@ -21,7 +21,7 @@ class ConversationService {
     // simulate network delay
     await Future.delayed(const Duration(milliseconds: 200));
 
-    final convId = 'conv_${sellerId}';
+    final convId = 'conv_$sellerId';
     _conversations.putIfAbsent(
         convId,
         () => {

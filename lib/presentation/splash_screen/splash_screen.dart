@@ -1,4 +1,4 @@
-import 'dart:math';
+// removed unused 'dart:math' - no longer used for splash sizing
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
@@ -24,8 +24,6 @@ class _SplashScreenState extends State<SplashScreen>
   bool _hasError = false;
   int _retryCount = 0;
   static const int _maxRetries = 3;
-  static const Duration _splashDuration = Duration(seconds: 3);
-  static const Duration _timeoutDuration = Duration(seconds: 5);
 
   @override
   void initState() {
@@ -84,14 +82,15 @@ class _SplashScreenState extends State<SplashScreen>
       await Future.delayed(const Duration(milliseconds: 300));
       _logoAnimationController.forward();
 
-      // Initialize app services with timeout
-      await Future.any([
-        _initializeAppServices(),
-        Future.delayed(_timeoutDuration, () => throw TimeoutException()),
-      ]);
+      // Simplified initialization - just wait for animations
+      await Future.delayed(const Duration(milliseconds: 1500));
 
-      // Wait for minimum splash duration
-      await Future.delayed(_splashDuration);
+      setState(() {
+        _isInitialized = true;
+      });
+
+      // Wait a bit more for user to see "Ready to connect!" message
+      await Future.delayed(const Duration(milliseconds: 800));
 
       if (mounted) {
         _navigateToNextScreen();
@@ -103,27 +102,7 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  Future<void> _initializeAppServices() async {
-    try {
-      // Simulate checking authentication status
-      await Future.delayed(const Duration(milliseconds: 800));
 
-      // Simulate loading user preferences
-      await Future.delayed(const Duration(milliseconds: 600));
-
-      // Simulate fetching essential configuration
-      await Future.delayed(const Duration(milliseconds: 700));
-
-      // Simulate preparing cached social feed data
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      setState(() {
-        _isInitialized = true;
-      });
-    } catch (e) {
-      throw Exception('Failed to initialize app services');
-    }
-  }
 
   void _handleInitializationError() {
     setState(() {
@@ -220,19 +199,8 @@ class _SplashScreenState extends State<SplashScreen>
           return Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppTheme.lightTheme.colorScheme.primary.withValues(
-                    alpha: _backgroundFadeAnimation.value,
-                  ),
-                  AppTheme.lightTheme.colorScheme.primaryContainer.withValues(
-                    alpha: _backgroundFadeAnimation.value * 0.8,
-                  ),
-                ],
-              ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
             ),
             child: SafeArea(
               child: Column(
@@ -252,36 +220,15 @@ class _SplashScreenState extends State<SplashScreen>
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // App logo
-                                  Container(
-                                    width: min(120.w, 120),
-                                    height: min(120.w, 120),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.circular(min(24.w, 24)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.1),
-                                          blurRadius: 20,
-                                          offset: const Offset(0, 10),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'I',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displayLarge
-                                            ?.copyWith(
-                                              color: AppTheme.lightTheme
-                                                  .colorScheme.primary,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 48,
-                                            ),
-                                      ),
+                                  // App logo: small unwrapped image (no white box)
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 2.h),
+                                    child: Image.asset(
+                                      'assets/images/Ispilo.png',
+                                      width: 72, // small size
+                                      height: 72,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (ctx, err, stack) => const SizedBox.shrink(),
                                     ),
                                   ),
                                   SizedBox(height: 3.h),
@@ -292,7 +239,7 @@ class _SplashScreenState extends State<SplashScreen>
                                         .textTheme
                                         .headlineLarge
                                         ?.copyWith(
-                                          color: Colors.white,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 32,
                                           letterSpacing: 2,
@@ -332,7 +279,7 @@ class _SplashScreenState extends State<SplashScreen>
                             // Error state
                             CustomIconWidget(
                               iconName: 'error_outline',
-                              color: Colors.white,
+                              color: Colors.red,
                               size: 32.w,
                             ),
                             SizedBox(height: 2.h),
@@ -342,7 +289,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   .textTheme
                                   .titleMedium
                                   ?.copyWith(
-                                    color: Colors.white,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     fontSize: 16,
                                   ),
                             ),
@@ -353,7 +300,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.8),
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                                     fontSize: 12.sp,
                                   ),
                             ),
@@ -363,10 +310,10 @@ class _SplashScreenState extends State<SplashScreen>
                               width: 32.w,
                               height: 32.w,
                               child: CircularProgressIndicator(
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Colors.white),
-                                strokeWidth: 3,
-                              ),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppTheme.lightTheme.colorScheme.primary),
+                                  strokeWidth: 3,
+                                ),
                             ),
                             SizedBox(height: 3.h),
                             Text(
@@ -377,7 +324,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.9),
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                                     fontSize: 16,
                                   ),
                             ),
@@ -396,7 +343,7 @@ class _SplashScreenState extends State<SplashScreen>
                           'ISP Community Platform',
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                     fontSize: 12.sp,
                                   ),
                         ),
@@ -405,7 +352,7 @@ class _SplashScreenState extends State<SplashScreen>
                           'Version 1.0.0',
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.5),
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                     fontSize: 12,
                                   ),
                         ),

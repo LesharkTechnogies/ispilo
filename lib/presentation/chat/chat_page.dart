@@ -17,8 +17,15 @@ import '../../core/services/conversation_service.dart';
 
 class ChatPage extends StatefulWidget {
   final Map<String, dynamic> conversation;
+  /// Optional initial message list provided by the caller (useful for local
+  /// mock data so the page can display messages without calling the service).
+  final List<Map<String, dynamic>>? initialMessages;
 
-  const ChatPage({super.key, required this.conversation});
+  const ChatPage({
+    super.key,
+    required this.conversation,
+    this.initialMessages,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -48,9 +55,12 @@ class _ChatPageState extends State<ChatPage> {
 
   static const String _pendingStorageKeyPrefix = 'pending_messages_';
 
-  String get _conversationId =>
-      widget.conversation['id'] as String? ??
-      'conv_${widget.conversation['sellerId'] ?? ''}';
+  String get _conversationId {
+    final idVal = widget.conversation['id'];
+    if (idVal is String) return idVal;
+    if (idVal is int) return idVal.toString();
+    return 'conv_${widget.conversation['sellerId'] ?? ''}';
+  }
 
   @override
   void initState() {
@@ -63,12 +73,53 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _loadConversationMessages() async {
     final convId = _conversationId;
-    // Fetch messages from service
-    final msgs = await ConversationService.instance.fetchMessages(convId);
+
+    // If the caller provided initialMessages (from our mock), use them and
+    // avoid calling the ConversationService. Otherwise fetch from the service.
+    final msgs = widget.initialMessages;
+    if (msgs != null) {
+      setState(() {
+        _messages.clear();
+        for (final m in msgs) {
+          final tsRaw = m['timestamp'] as String?;
+          DateTime ts;
+          try {
+            ts = tsRaw != null ? DateTime.parse(tsRaw).toLocal() : DateTime.now();
+          } catch (_) {
+            ts = DateTime.now();
+          }
+
+          final type = (m['type'] as String?) ?? 'text';
+
+          // senderId can be numeric (0 means current user) or a string id.
+          final sender = m['senderId'];
+          final bool isSentByMe = (sender == 0) || (sender == _currentUserId) || (sender is String && sender == _currentUserId);
+
+          _messages.add({
+            'id': m['id'],
+            'type': type,
+            'text': m['text'] ?? '',
+            'mediaPath': m['mediaPath'],
+            'documentName': m['documentName'],
+            'durationMs': m['durationMs'],
+            'isSentByMe': isSentByMe,
+            'timestamp': ts,
+            'isRead': m['isRead'] as bool? ?? true,
+            'status': 'sent',
+          });
+        }
+      });
+
+      // If using mock messages, we don't need to call the service to mark read
+      return;
+    }
+
+    // Fetch messages from the service
+    final fetched = await ConversationService.instance.fetchMessages(convId);
 
     setState(() {
       _messages.clear();
-      for (final m in msgs.reversed) {
+      for (final m in fetched.reversed) {
         final senderId = m['senderId'] as String? ?? '';
         final tsRaw = m['timestamp'] as String?;
         DateTime ts;
@@ -142,7 +193,7 @@ class _ChatPageState extends State<ChatPage> {
     final prefs = _prefs ?? await SharedPreferences.getInstance();
     _prefs = prefs;
 
-    final key = '${_pendingStorageKeyPrefix}${_conversationId}';
+    final key = '$_pendingStorageKeyPrefix$_conversationId';
     final pendingList = prefs.getStringList(key) ?? [];
 
     if (pendingList.isEmpty) return;
@@ -176,7 +227,7 @@ class _ChatPageState extends State<ChatPage> {
     final prefs = _prefs ?? await SharedPreferences.getInstance();
     _prefs = prefs;
 
-    final key = '${_pendingStorageKeyPrefix}${_conversationId}';
+    final key = '$_pendingStorageKeyPrefix$_conversationId';
     final pendingList = prefs.getStringList(key) ?? [];
 
     if (pendingList.isEmpty) return;
@@ -550,7 +601,7 @@ class _ChatPageState extends State<ChatPage> {
     final prefs = _prefs ?? await SharedPreferences.getInstance();
     _prefs = prefs;
 
-    final key = '${_pendingStorageKeyPrefix}${_conversationId}';
+    final key = '$_pendingStorageKeyPrefix$_conversationId';
     final existing = prefs.getStringList(key) ?? [];
     final encoded = jsonEncode({
       'id': message['id'],

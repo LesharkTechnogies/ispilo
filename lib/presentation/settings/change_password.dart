@@ -108,10 +108,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty)
+                  if (value == null || value.isEmpty) {
                     return 'Please confirm your new password';
-                  if (value != _newPasswordCtrl.text)
+                  }
+                  if (value != _newPasswordCtrl.text) {
                     return 'Passwords do not match';
+                  }
                   return null;
                 },
               ),

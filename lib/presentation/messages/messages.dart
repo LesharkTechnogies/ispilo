@@ -4,9 +4,10 @@ import 'package:sizer/sizer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/app_export.dart';
-import '../../widgets/custom_bottom_bar.dart';
 import '../../widgets/custom_image_widget.dart';
+import '../home_feed/widgets/story_item_widget.dart';
 import '../chat/chat_page.dart';
+import '../home_feed/mock_data.dart' show kConversations, kMessages, markConversationRead;
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -17,70 +18,54 @@ class MessagesPage extends StatefulWidget {
 
 class _MessagesPageState extends State<MessagesPage> {
   final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
-  // Mock data for conversations
-  final List<Map<String, dynamic>> _conversations = [
-    {
-      "id": 1,
-      "name": "Sarah Chen",
-      "avatar":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "lastMessage":
-          "Thanks for the network diagram! It really helped with our setup.",
-      "timestamp": "2m",
-      "isOnline": true,
-      "unreadCount": 2,
-      "isVerified": true,
-    },
-    {
-      "id": 2,
-      "name": "Mike Rodriguez",
-      "avatar":
-          "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "lastMessage":
-          "Can we schedule a call tomorrow about the router configuration?",
-      "timestamp": "15m",
-      "isOnline": false,
-      "unreadCount": 0,
-      "isVerified": false,
-    },
-    {
-      "id": 3,
-      "name": "Tech Support Team",
-      "avatar":
-          "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "lastMessage":
-          "Your support ticket has been resolved. Let us know if you need further assistance.",
-      "timestamp": "1h",
-      "isOnline": false,
-      "unreadCount": 0,
-      "isVerified": true,
-    },
-    {
-      "id": 4,
-      "name": "Alex Network",
-      "avatar":
-          "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "lastMessage":
-          "Just shared the latest fiber optic installation photos in the group!",
-      "timestamp": "3h",
-      "isOnline": true,
-      "unreadCount": 1,
-      "isVerified": false,
-    },
-    {
-      "id": 5,
-      "name": "Jennifer Park",
-      "avatar":
-          "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400",
-      "lastMessage":
-          "The wireless deployment went smoothly. Thanks for your guidance!",
-      "timestamp": "5h",
-      "isOnline": false,
-      "unreadCount": 0,
-      "isVerified": true,
-    },
-  ];
+  // Use shared conversations from mock data
+  List<Map<String, dynamic>> get _conversations => kConversations;
+
+  // Filtered conversations based on search query
+  List<Map<String, dynamic>> get _filteredConversations {
+    if (_searchQuery.isEmpty) {
+      return _conversations;
+    }
+
+    final query = _searchQuery.toLowerCase();
+    return _conversations.where((conversation) {
+      // Search by name
+      final name = (conversation['name'] as String? ?? '').toLowerCase();
+      if (name.contains(query)) return true;
+
+      // Search by username (if available)
+      final username = (conversation['username'] as String? ?? '').toLowerCase();
+      if (username.contains(query)) return true;
+
+      // Search by last message content
+      final lastMessage = (conversation['lastMessage'] as String? ?? '').toLowerCase();
+      if (lastMessage.contains(query)) return true;
+
+      // Search through all messages in the conversation
+      final userId = conversation['userId'] as int?;
+      if (userId != null && kMessages.containsKey(userId)) {
+        final messages = kMessages[userId] ?? [];
+        return messages.any((msg) {
+          final text = (msg['text'] as String? ?? '').toLowerCase();
+          return text.contains(query);
+        });
+      }
+
+      return false;
+    }).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -90,17 +75,24 @@ class _MessagesPageState extends State<MessagesPage> {
 
   void _handleConversationTap(Map<String, dynamic> conversation) {
     HapticFeedback.lightImpact();
+    // Update mock data to mark the conversation as read so the UI updates.
+    try {
+      final uid = conversation['userId'] as int;
+      markConversationRead(uid);
+    } catch (_) {}
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChatPage(conversation: conversation),
+        builder: (context) => ChatPage(
+          conversation: conversation,
+          initialMessages: kMessages[conversation['userId'] as int],
+        ),
       ),
-    );
-  }
-
-  void _handleNewMessage() {
-    HapticFeedback.lightImpact();
-    // Navigate to contacts or new message screen
+    ).then((_) {
+      // When returning, refresh state so badges reflect changes.
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -121,24 +113,6 @@ class _MessagesPageState extends State<MessagesPage> {
             color: Colors.white,
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: _handleNewMessage,
-            icon: const Icon(
-              Icons.edit,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.search,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -152,7 +126,7 @@ class _MessagesPageState extends State<MessagesPage> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search conversations...',
+                hintText: 'Search by name or message...',
                 hintStyle: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey[600],
@@ -162,6 +136,21 @@ class _MessagesPageState extends State<MessagesPage> {
                   size: 20,
                   color: Colors.grey[600],
                 ),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          size: 20,
+                          color: Colors.grey[600],
+                        ),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 4.w,
@@ -172,81 +161,100 @@ class _MessagesPageState extends State<MessagesPage> {
             ),
           ),
 
-          // Active Status Bar
-          Container(
-            height: 10.h,
-            margin: EdgeInsets.symmetric(vertical: 1.h),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
-              itemCount: _conversations.where((c) => c['isOnline']).length,
-              itemBuilder: (context, index) {
-                final onlineUsers =
-                    _conversations.where((c) => c['isOnline']).toList();
-                final user = onlineUsers[index];
+          // Active Status Bar - hide when searching
+          if (_searchQuery.isEmpty)
+            Container(
+              height: 12.h,
+              margin: EdgeInsets.symmetric(vertical: 1.h),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                itemCount: _conversations.where((c) => c['isOnline']).length,
+                itemBuilder: (context, index) {
+                  final onlineUsers =
+                      _conversations.where((c) => c['isOnline']).toList();
+                  final user = onlineUsers[index];
 
-                return Container(
-                  margin: EdgeInsets.only(right: 3.w),
-                  child: Column(
-                    children: [
-                      Stack(
-                        children: [
-                          ClipOval(
-                            child: CustomImageWidget(
-                              imageUrl: user['avatar'],
-                              width: 12.w,
-                              height: 12.w,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              width: 3.w,
-                              height: 3.w,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: colorScheme.surface,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 0.5.h),
-                      Text(
-                        user['name'].split(' ')[0],
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: colorScheme.onSurface,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                );
-              },
+                  final bool hasUnread = (user['unreadCount'] as int? ?? 0) > 0;
+
+                  return StoryItemWidget(
+                    story: {
+                      'username': (user['name'] as String).split(' ')[0],
+                      'avatar': user['avatar'],
+                      'isViewed': !hasUnread,
+                      'comments': hasUnread ? (user['unreadCount'] as int) : 0,
+                      'isOnline': user['isOnline'],
+                    },
+                    diameter: 10.w,
+                    onTap: () => _handleConversationTap(user),
+                  );
+                },
+              ),
             ),
-          ),
 
-          Divider(
-            height: 0.5.h,
-            color: colorScheme.outline.withValues(alpha: 0.2),
-          ),
+          if (_searchQuery.isEmpty)
+            Divider(
+              height: 0.5.h,
+              color: colorScheme.outline.withValues(alpha: 0.2),
+            ),
+
+          // Search results count
+          if (_searchQuery.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+              child: Text(
+                '${_filteredConversations.length} result${_filteredConversations.length != 1 ? 's' : ''} found',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
 
           // Conversations List
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: _conversations.length,
-              itemBuilder: (context, index) {
-                final conversation = _conversations[index];
-                final hasUnread = conversation['unreadCount'] > 0;
+            child: _filteredConversations.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          _searchQuery.isEmpty
+                              ? 'No conversations yet'
+                              : 'No results found',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (_searchQuery.isNotEmpty) ...[
+                          SizedBox(height: 1.h),
+                          Text(
+                            'Try searching for a different name or message',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: _filteredConversations.length,
+                    itemBuilder: (context, index) {
+                      final conversation = _filteredConversations[index];
+                      final hasUnread = conversation['unreadCount'] > 0;
 
                 return Container(
                   margin:
@@ -380,10 +388,6 @@ class _MessagesPageState extends State<MessagesPage> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: const CustomBottomBar(
-        currentIndex: 0,
-        variant: CustomBottomBarVariant.standard,
       ),
     );
   }

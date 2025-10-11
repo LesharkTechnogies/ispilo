@@ -363,23 +363,27 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
           ),
         ),
         SizedBox(height: 1.h),
-        ..._conditions.map((condition) {
-          // 'isSelected' was unused; RadioListTile uses groupValue instead.
-          return RadioListTile<String>(
-            title: Text(
-              condition,
-              style: GoogleFonts.inter(
-                fontSize: 14.sp,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            value: condition,
-            groupValue: _filters['condition'],
-            onChanged: (value) => setState(() => _filters['condition'] = value),
-            activeColor: colorScheme.primary,
-            contentPadding: EdgeInsets.zero,
-          );
-        }),
+        // Wrap with RadioGroup to avoid deprecation warnings
+        RadioGroup<String>(
+          groupValue: _filters['condition'] as String?,
+          onChanged: (value) => setState(() => _filters['condition'] = value),
+          child: Column(
+            children: _conditions.map((condition) {
+              return RadioListTile<String>(
+                title: Text(
+                  condition,
+                  style: GoogleFonts.inter(
+                    fontSize: 14.sp,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+                value: condition,
+                activeColor: colorScheme.primary,
+                contentPadding: EdgeInsets.zero,
+              );
+            }).toList(),
+          ),
+        ),
       ],
     );
   }

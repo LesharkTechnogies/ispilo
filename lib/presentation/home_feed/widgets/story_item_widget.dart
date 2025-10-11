@@ -7,11 +7,13 @@ import '../../../widgets/profile_avatar.dart';
 class StoryItemWidget extends StatelessWidget {
   final Map<String, dynamic> story;
   final VoidCallback? onTap;
+  final double? diameter;
 
   const StoryItemWidget({
     super.key,
     required this.story,
     this.onTap,
+    this.diameter,
   });
 
   @override
@@ -19,6 +21,9 @@ class StoryItemWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isViewed = story['isViewed'] as bool? ?? false;
     final comments = story['comments'] as int? ?? 0;
+
+    final double boxSize = (diameter ?? min(16.w, 64)).toDouble();
+    final double innerPadding = ((boxSize * 0.06).clamp(2, 8)).toDouble();
 
     return GestureDetector(
       onTap: onTap,
@@ -30,8 +35,8 @@ class StoryItemWidget extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  width: min(16.w, 64),
-                  height: min(16.w, 64),
+                  width: boxSize,
+                  height: boxSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: isViewed
@@ -48,7 +53,7 @@ class StoryItemWidget extends StatelessWidget {
                         ? theme.colorScheme.outline.withValues(alpha: 0.3)
                         : null,
                   ),
-                  padding: EdgeInsets.all(min(0.5.w, 2)),
+                  padding: EdgeInsets.all(innerPadding),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -60,7 +65,7 @@ class StoryItemWidget extends StatelessWidget {
                     child: ClipOval(
                       child: ProfileAvatar(
                         imageUrl: story['avatar'] as String? ?? '',
-                        size: min(14.w, 56).toDouble(),
+                        size: (boxSize * 0.88).toDouble(),
                         isOnline: story['isOnline'] as bool? ?? false,
                       ),
                     ),
@@ -98,7 +103,7 @@ class StoryItemWidget extends StatelessWidget {
             ),
             SizedBox(height: 1.h),
             SizedBox(
-              width: min(16.w, 64),
+              width: boxSize,
               child: Text(
                 story['username'] as String? ?? '',
                 style: theme.textTheme.labelSmall?.copyWith(

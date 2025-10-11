@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:google_fonts/google_fonts.dart';
-
+ 
 import '../../../core/app_export.dart';
 
 class RecentlyViewedWidget extends StatelessWidget {
@@ -19,6 +18,16 @@ class RecentlyViewedWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final titleStyle = theme.textTheme.titleSmall?.copyWith(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: colorScheme.onSurface,
+        ) ??
+        TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colorScheme.onSurface);
+
+    // Product card styles are defined inside _buildRecentProductCard to
+    // ensure they respect the local BuildContext and avoid unused declarations.
+
     if (recentProducts.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -30,14 +39,7 @@ class RecentlyViewedWidget extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 2.w),
-            child: Text(
-              'Recently Viewed',
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-              ),
-            ),
+            child: Text('Recently Viewed', style: titleStyle),
           ),
           SizedBox(height: 0.5.h),
           SizedBox(
@@ -62,6 +64,28 @@ class RecentlyViewedWidget extends StatelessWidget {
     Map<String, dynamic> product,
     ColorScheme colorScheme,
   ) {
+    final theme = Theme.of(context);
+    final productTitleStyle = theme.textTheme.titleMedium?.copyWith(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: colorScheme.onSurface,
+        ) ??
+        TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: colorScheme.onSurface);
+
+    final priceStyle = theme.textTheme.titleLarge?.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: colorScheme.primary,
+        ) ??
+        TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colorScheme.primary);
+
+    final metaStyle = theme.textTheme.bodySmall?.copyWith(
+          fontSize: 10,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurface.withValues(alpha: 0.7),
+        ) ??
+        TextStyle(fontSize: 10, fontWeight: FontWeight.w400, color: colorScheme.onSurface.withValues(alpha: 0.7));
+
     return GestureDetector(
       onTap: () => onProductTap(product),
       child: SizedBox(
@@ -109,11 +133,7 @@ class RecentlyViewedWidget extends StatelessWidget {
                       // Product Title
                       Text(
                         product["title"] as String,
-                        style: GoogleFonts.inter(
-                          fontSize: 14, // Match related products title font size
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurface,
-                        ),
+                        style: productTitleStyle,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -121,14 +141,7 @@ class RecentlyViewedWidget extends StatelessWidget {
                       const SizedBox(height: 8), // Match related products spacing
 
                       // Price
-                      Text(
-                        product["price"] as String,
-                        style: GoogleFonts.inter(
-                          fontSize: 16, // Match related products price font size
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.primary,
-                        ),
-                      ),
+                      Text(product["price"] as String, style: priceStyle),
 
                       const SizedBox(height: 4), // Small spacing for seller info
 
@@ -144,11 +157,7 @@ class RecentlyViewedWidget extends StatelessWidget {
                           Expanded(
                             child: Text(
                               product["seller"] as String,
-                              style: GoogleFonts.inter(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400,
-                                color: colorScheme.onSurface.withValues(alpha: 0.7),
-                              ),
+                              style: metaStyle,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -168,11 +177,7 @@ class RecentlyViewedWidget extends StatelessWidget {
                           const SizedBox(width: 4), // Match related products spacing
                           Text(
                             product["rating"].toString(),
-                            style: GoogleFonts.inter(
-                              fontSize: 12, // Match related products rating font size
-                              fontWeight: FontWeight.w400,
-                              color: colorScheme.onSurface.withValues(alpha: 0.6),
-                            ),
+                            style: metaStyle.copyWith(fontSize: 12, color: colorScheme.onSurface.withValues(alpha: 0.6)),
                           ),
                         ],
                       ),

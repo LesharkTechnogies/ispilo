@@ -5,8 +5,6 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'dart:async';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:math' as math;
 
@@ -120,11 +118,12 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                           icon: Icons.file_download,
                           label: 'Download',
                           onTap: () async {
+                            final scaffold = ScaffoldMessenger.of(context);
                             final savedPath = await _downloadImageWithWatermark(
                                 widget.imageUrl, 'ispilo');
-                            if (!context.mounted) return;
+                            if (!mounted) return;
                             if (savedPath != null && savedPath.isNotEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              scaffold.showSnackBar(
                                 SnackBar(
                                   content: Text('Saved to: $savedPath'),
                                   action: SnackBarAction(
@@ -134,10 +133,8 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                                         final f = File(savedPath);
                                         if (await f.exists()) {
                                           await f.delete();
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content:
-                                                      Text('Save undone')));
+                                          scaffold.showSnackBar(const SnackBar(
+                                              content: Text('Save undone')));
                                         }
                                       } catch (_) {}
                                     },
@@ -145,7 +142,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                                 ),
                               );
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              scaffold.showSnackBar(
                                   const SnackBar(
                                       content: Text('Failed to save image')));
                             }
@@ -156,15 +153,23 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                           icon: Icons.share,
                           label: 'Share',
                           onTap: () async {
+                            final scaffold = ScaffoldMessenger.of(context);
+                            final navigator = Navigator.of(context);
                             final savedPath = await _downloadImageWithWatermark(
                                 widget.imageUrl, 'ispilo');
-                            if (!context.mounted) return;
+                            if (!mounted) return;
                             if (savedPath != null && savedPath.isNotEmpty) {
-                              await Share.shareXFiles([XFile(savedPath)],
-                                  text: 'Shared from Ispilo');
-                              Navigator.pop(context);
+                              // Capture navigator before awaiting share to avoid
+                              // using BuildContext across async gaps.
+                              final navigatorBefore = navigator;
+                              final params = ShareParams(
+                                text: 'Shared from Ispilo',
+                                files: [XFile(savedPath)],
+                              );
+                              await SharePlus.instance.share(params);
+                              navigatorBefore.pop();
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              scaffold.showSnackBar(
                                   const SnackBar(
                                       content: Text(
                                           'Failed to prepare image for sharing')));
@@ -176,12 +181,14 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                           icon: Icons.person,
                           label: 'Set Avatar',
                           onTap: () async {
+                            final scaffold = ScaffoldMessenger.of(context);
+                            final navigator = Navigator.of(context);
                             final savedPath = await _downloadImageWithWatermark(
                                 widget.imageUrl, 'ispilo');
-                            if (!context.mounted) return;
+                            if (!mounted) return;
                             if (savedPath != null && savedPath.isNotEmpty) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              navigator.pop();
+                              scaffold.showSnackBar(
                                 SnackBar(
                                   content: Text('Saved avatar to: $savedPath'),
                                   action: SnackBarAction(
@@ -191,10 +198,9 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                                         final f = File(savedPath);
                                         if (await f.exists()) {
                                           await f.delete();
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content: Text(
-                                                      'Avatar save undone')));
+                                          scaffold.showSnackBar(const SnackBar(
+                                              content:
+                                                  Text('Avatar save undone')));
                                         }
                                       } catch (_) {}
                                     },
@@ -202,7 +208,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
                                 ),
                               );
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              scaffold.showSnackBar(
                                   const SnackBar(
                                       content:
                                           Text('Failed to save avatar image')));
@@ -248,15 +254,15 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
       canvas.drawImage(image, Offset.zero, paint);
 
       // Watermark styling
-      final double fontSize = math.max(14.0, image.width * 0.04);
-      final textStyle = TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: fontSize,
-          fontWeight: FontWeight.w600,
-          shadows: [
-            const Shadow(
-                blurRadius: 2, color: Colors.black45, offset: Offset(1, 1))
-          ]);
+    final double fontSize = math.max(14.0, image.width * 0.04);
+    final textStyle = TextStyle(
+      color: Colors.white.withValues(alpha: 0.7),
+      fontSize: fontSize,
+      fontWeight: FontWeight.w600,
+      shadows: [
+      const Shadow(
+        blurRadius: 2, color: Colors.black45, offset: Offset(1, 1))
+      ]);
       final tp = TextPainter(
           text: TextSpan(text: watermark, style: textStyle),
           textDirection: TextDirection.ltr);
@@ -275,32 +281,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer>
       if (byteData == null) return null;
       final pngBytes = byteData.buffer.asUint8List();
 
-      // Try to save to gallery (Android first). If it fails, fall back to app documents directory.
-      try {
-        // Request permission for Android/iOS where needed
-        if (Platform.isAndroid) {
-          final status = await Permission.storage.request();
-          if (!status.isGranted) {
-            // permission denied - fall back to documents
-            throw Exception('Storage permission denied');
-          }
-        } else if (Platform.isIOS) {
-          final status = await Permission.photos.request();
-          if (!status.isGranted) {
-            throw Exception('Photos permission denied');
-          }
-        }
-
-        final result = await ImageGallerySaver.saveImage(pngBytes,
-            quality: 90,
-            name: 'ispilo_${DateTime.now().millisecondsSinceEpoch}');
-        if (result != null && result['filePath'] != null) {
-          final String path = result['filePath'];
-          return path;
-        }
-      } catch (e) {
-        // ignore and fall back to saving in app documents directory
-      }
+      // Save locally under app documents (no external gallery plugin to avoid build issues)
 
       final dir = await getApplicationDocumentsDirectory();
       final rawName = uri.pathSegments.isNotEmpty
