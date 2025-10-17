@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/app_export.dart';
 import '../../data/marketplace_data.dart';
 import '../../widgets/custom_icon_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_bottom_bar.dart';
 import './widgets/category_chip_widget.dart';
 import './widgets/filter_bottom_sheet_widget.dart';
@@ -22,6 +23,15 @@ class Marketplace extends StatefulWidget {
 }
 
 class _MarketplaceState extends State<Marketplace> {
+  Future<void> _handleSellButton() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isShopRegistered = prefs.getInt('shopregidtered') ?? 0;
+    if (isShopRegistered == 1) {
+      Navigator.pushNamed(context, '/sell-something');
+    } else {
+      Navigator.pushNamed(context, '/settings');
+    }
+  }
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
@@ -361,7 +371,7 @@ class _MarketplaceState extends State<Marketplace> {
       floatingActionButton: Theme.of(context).platform == TargetPlatform.iOS
           ? null
           : FloatingActionButton.extended(
-              onPressed: _createListing,
+              onPressed: _handleSellButton,
               backgroundColor: colorScheme.primary,
               foregroundColor: colorScheme.onPrimary,
               icon: CustomIconWidget(

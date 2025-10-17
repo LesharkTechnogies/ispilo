@@ -8,6 +8,10 @@ import '../presentation/settings/settings.dart';
 import '../presentation/settings/edit_profile.dart';
 import '../presentation/messages/messages.dart';
 import '../presentation/chat/chat_page.dart';
+import '../presentation/marketplace/shop_registration_step1_page.dart';
+import '../presentation/marketplace/shop_registration_step2_verification.dart';
+import '../presentation/marketplace/shop_registration_step3_payment.dart';
+import '../presentation/marketplace/shop_registration_step4_legal.dart';
 
 class AppRoutes {
   // TODO: Add your routes here
@@ -21,6 +25,10 @@ class AppRoutes {
   static const String editProfile = '/edit-profile';
   static const String messages = '/messages';
   static const String chat = '/chat';
+  static const String shopRegistrationStep1 = '/shop-registration-step1';
+  static const String shopRegistrationStep2 = '/shop-registration-step2';
+  static const String shopRegistrationStep3 = '/shop-registration-step3';
+  static const String shopRegistrationStep4 = '/shop-registration-step4';
 
   static Map<String, WidgetBuilder> routes = {
     initial: (context) => const SplashScreen(),
@@ -37,6 +45,10 @@ class AppRoutes {
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       return ChatPage(conversation: args ?? {});
     },
+    shopRegistrationStep1: (context) => const ShopRegistrationStep1Page(),
+    shopRegistrationStep2: (context) => const ShopRegistrationStep2VerificationPage(),
+    shopRegistrationStep3: (context) => const ShopRegistrationStep3PaymentPage(),
+    shopRegistrationStep4: (context) => const ShopRegistrationStep4LegalPage(),
     // TODO: Add your other routes here
   };
 }

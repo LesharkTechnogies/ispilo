@@ -6,12 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   AppTheme();
 
-  // Technical Trust Palette - Professional blue-anchored system
-  static const Color primaryLight = Color(0xFF2563EB); // Professional blue
-  static const Color primaryVariantLight = Color(0xFF1D4ED8);
+  // Technical Trust Palette - Professional green-anchored system
+  static const Color primaryLight = Color(0xFF10B981); // Professional green (matching app icon)
+  static const Color primaryVariantLight = Color(0xFF059669);
   static const Color secondaryLight = Color(0xFF64748B); // Supporting slate
   static const Color secondaryVariantLight = Color(0xFF475569);
-  static const Color accentLight = Color(0xFF0EA5E9); // Interactive elements
+  static const Color accentLight = Color(0xFF14B8A6); // Interactive elements (teal)
   static const Color successLight = Color(0xFF10B981); // Positive actions
   static const Color warningLight = Color(0xFFF59E0B); // Attention states
   static const Color errorLight = Color(0xFFEF4444); // Error states
@@ -21,11 +21,11 @@ class AppTheme {
   static const Color textSecondaryLight = Color(0xFF64748B); // Supporting text
 
   // Dark mode variants for comfortable extended viewing
-  static const Color primaryDark = Color(0xFF3B82F6);
-  static const Color primaryVariantDark = Color(0xFF2563EB);
+  static const Color primaryDark = Color(0xFF34D399);
+  static const Color primaryVariantDark = Color(0xFF10B981);
   static const Color secondaryDark = Color(0xFF94A3B8);
   static const Color secondaryVariantDark = Color(0xFF64748B);
-  static const Color accentDark = Color(0xFF38BDF8);
+  static const Color accentDark = Color(0xFF2DD4BF);
   static const Color successDark = Color(0xFF34D399);
   static const Color warningDark = Color(0xFFFBBF24);
   static const Color errorDark = Color(0xFFF87171);

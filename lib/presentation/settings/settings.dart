@@ -681,9 +681,13 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
+    return FutureBuilder<int>(
+      future: SharedPreferences.getInstance().then((prefs) => prefs.getInt('shopregidtered') ?? 0),
+      builder: (context, snapshot) {
+        final isShopRegistered = snapshot.data == 1;
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
         title: Text(
           'Settings',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -926,10 +930,28 @@ class _SettingsState extends State<Settings> {
           );
         },
       ),
-      bottomNavigationBar: const CustomBottomBar(
-        currentIndex: 3,
-        variant: CustomBottomBarVariant.standard,
-      ),
+          bottomNavigationBar: const CustomBottomBar(
+            currentIndex: 3,
+            variant: CustomBottomBarVariant.standard,
+          ),
+          floatingActionButton: isShopRegistered
+              ? null
+              : FloatingActionButton.extended(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    final isShopRegistered = prefs.getInt('shopregidtered') ?? 0;
+                    if (isShopRegistered == 1) {
+                      Navigator.pushNamed(context, '/sell-something');
+                    } else {
+                      Navigator.pushNamed(context, '/shop-registration-step1');
+                    }
+                  },
+                  icon: const Icon(Icons.store),
+                  label: const Text('Create Shop'),
+                  backgroundColor: theme.colorScheme.primary,
+                ),
+        );
+      },
     );
   }
 }

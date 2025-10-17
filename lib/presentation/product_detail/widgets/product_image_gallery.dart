@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import '../../../widgets/fullscreen_image_viewer.dart';
 
 class ProductImageGallery extends StatefulWidget {
   final List<String> images;
@@ -40,7 +41,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
     final colorScheme = theme.colorScheme;
 
     return SizedBox(
-      height: 85.w,
+      height: 50.h, // Reduced from 85.w to 50% of screen height
       width: double.infinity,
       child: Stack(
         children: [
@@ -56,7 +57,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
             itemCount: widget.images.length,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () => _openFullScreenGallery(context, index),
+                onTap: () => _openFullScreenImage(context, index),
                 child: Hero(
                   tag: 'product_image_$index',
                   child: Container(
@@ -70,7 +71,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
                       child: CustomImageWidget(
                         imageUrl: widget.images[index],
                         width: double.infinity,
-                        height: 85.w,
+                        height: 50.h,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -116,7 +117,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: IconButton(
-                onPressed: () => _openFullScreenGallery(context, _currentIndex),
+                onPressed: () => _openFullScreenImage(context, _currentIndex),
                 icon: CustomIconWidget(
                   iconName: 'fullscreen',
                   color: Colors.white,
@@ -130,125 +131,15 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
     );
   }
 
-  void _openFullScreenGallery(BuildContext context, int initialIndex) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => _FullScreenGallery(
-          images: widget.images,
-          initialIndex: initialIndex,
-          productTitle: widget.productTitle,
-        ),
+  void _openFullScreenImage(BuildContext context, int index) {
+    HapticFeedback.mediumImpact();
+    showDialog(
+      context: context,
+      barrierColor: Colors.black,
+      builder: (context) => FullScreenImageViewer(
+        imageUrl: widget.images[index],
+        heroTag: 'product_image_$index',
       ),
     );
-  }
-}
-
-class _FullScreenGallery extends StatefulWidget {
-  final List<String> images;
-  final int initialIndex;
-  final String productTitle;
-
-  const _FullScreenGallery({
-    required this.images,
-    required this.initialIndex,
-    required this.productTitle,
-  });
-
-  @override
-  State<_FullScreenGallery> createState() => _FullScreenGalleryState();
-}
-
-class _FullScreenGalleryState extends State<_FullScreenGallery> {
-  late PageController _pageController;
-  late int _currentIndex;
-  final TransformationController _transformationController =
-      TransformationController();
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.initialIndex;
-    _pageController = PageController(initialPage: widget.initialIndex);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _transformationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // full-screen build doesn't need local theme/colorScheme here
-
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: CustomIconWidget(
-            iconName: 'close',
-            color: Colors.white,
-            size: 24,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: _shareImage,
-            icon: CustomIconWidget(
-              iconName: 'share',
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-        ],
-        title: Text(
-          '${_currentIndex + 1} of ${widget.images.length}',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: PageView.builder(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          _transformationController.value = Matrix4.identity();
-        },
-        itemCount: widget.images.length,
-        itemBuilder: (context, index) {
-          return InteractiveViewer(
-            transformationController: _transformationController,
-            minScale: 1.0,
-            maxScale: 4.0,
-            child: Center(
-              child: Hero(
-                tag: 'product_image_$index',
-                child: CustomImageWidget(
-                  imageUrl: widget.images[index],
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _shareImage() {
-    // Share functionality would be implemented here
-    HapticFeedback.lightImpact();
   }
 }
