@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/app_export.dart';
 import '../../core/theme_provider.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../widgets/fullscreen_image_viewer.dart';
 import '../../widgets/custom_bottom_bar.dart';
 import './widgets/settings_section_widget.dart';
@@ -684,8 +683,18 @@ class _SettingsState extends State<Settings> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: CustomAppBar(
-        title: 'Settings',
+      appBar: AppBar(
+        title: Text(
+          'Settings',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: theme.colorScheme.surface,
+        foregroundColor: theme.colorScheme.onSurface,
+        elevation: 0,
+        automaticallyImplyLeading: false,
       ),
       body: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

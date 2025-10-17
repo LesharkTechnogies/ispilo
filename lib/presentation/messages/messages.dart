@@ -99,6 +99,10 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    
+    // Get screen width to detect desktop vs mobile
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDesktop = screenWidth > 600;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -118,7 +122,12 @@ class _MessagesPageState extends State<MessagesPage> {
         children: [
           // Quick Search Bar
           Container(
-            margin: EdgeInsets.fromLTRB(4.w, 1.h, 4.w, 1.h),
+            margin: EdgeInsets.fromLTRB(
+              isDesktop ? 16 : 4.w,
+              isDesktop ? 12 : 1.h,
+              isDesktop ? 16 : 4.w,
+              isDesktop ? 12 : 1.h,
+            ),
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(20),
@@ -153,8 +162,8 @@ class _MessagesPageState extends State<MessagesPage> {
                     : null,
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
-                  horizontal: 4.w,
-                  vertical: 1.2.h,
+                  horizontal: isDesktop ? 16 : 4.w,
+                  vertical: isDesktop ? 12 : 1.2.h,
                 ),
               ),
               style: GoogleFonts.inter(fontSize: 14),
@@ -164,11 +173,15 @@ class _MessagesPageState extends State<MessagesPage> {
           // Active Status Bar - hide when searching
           if (_searchQuery.isEmpty)
             Container(
-              height: 12.h,
-              margin: EdgeInsets.symmetric(vertical: 1.h),
+              height: isDesktop ? 120 : 12.h.clamp(80, 120),
+              margin: EdgeInsets.symmetric(
+                vertical: isDesktop ? 12 : 1.h,
+              ),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isDesktop ? 16 : 4.w,
+                ),
                 itemCount: _conversations.where((c) => c['isOnline']).length,
                 itemBuilder: (context, index) {
                   final onlineUsers =
@@ -185,7 +198,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       'comments': hasUnread ? (user['unreadCount'] as int) : 0,
                       'isOnline': user['isOnline'],
                     },
-                    diameter: 10.w,
+                    diameter: isDesktop ? 64 : 10.w,
                     onTap: () => _handleConversationTap(user),
                   );
                 },
@@ -194,14 +207,17 @@ class _MessagesPageState extends State<MessagesPage> {
 
           if (_searchQuery.isEmpty)
             Divider(
-              height: 0.5.h,
+              height: isDesktop ? 1 : 0.5.h,
               color: colorScheme.outline.withValues(alpha: 0.2),
             ),
 
           // Search results count
           if (_searchQuery.isNotEmpty)
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 16 : 4.w,
+                vertical: isDesktop ? 12 : 1.h,
+              ),
               child: Text(
                 '${_filteredConversations.length} result${_filteredConversations.length != 1 ? 's' : ''} found',
                 style: GoogleFonts.inter(
@@ -256,57 +272,63 @@ class _MessagesPageState extends State<MessagesPage> {
                       final conversation = _filteredConversations[index];
                       final hasUnread = conversation['unreadCount'] > 0;
 
-                return Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.1),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: ListTile(
-                    onTap: () => _handleConversationTap(conversation),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 4.w,
-                      vertical: 1.2.h,
-                    ),
-                    leading: Stack(
-                      children: [
-                        ClipOval(
-                          child: CustomImageWidget(
-                            imageUrl: conversation['avatar'],
-                            width: 14.w,
-                            height: 14.w,
-                            fit: BoxFit.cover,
-                          ),
+                      // Responsive sizing
+                      final avatarSize = (isDesktop ? 56.0 : 14.w.clamp(50.0, 60.0)).toDouble();
+                      final onlineDotSize = (isDesktop ? 14.0 : 4.w.clamp(12.0, 16.0)).toDouble();
+
+                      return Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: isDesktop ? 8 : 2.w,
+                          vertical: isDesktop ? 4 : 0.5.h,
                         ),
-                        if (conversation['isOnline'])
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              width: 4.w,
-                              height: 4.w,
-                              decoration: BoxDecoration(
-                                color:
-                                    const Color(0xFF00D84A), // WhatsApp green
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.1),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          onTap: () => _handleConversationTap(conversation),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: isDesktop ? 16 : 4.w,
+                            vertical: isDesktop ? 12 : 1.2.h,
+                          ),
+                          leading: Stack(
+                            children: [
+                              ClipOval(
+                                child: CustomImageWidget(
+                                  imageUrl: conversation['avatar'],
+                                  width: avatarSize,
+                                  height: avatarSize,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ),
+                              if (conversation['isOnline'])
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    width: onlineDotSize,
+                                    height: onlineDotSize,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          const Color(0xFF00D84A), // WhatsApp green
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                      ],
-                    ),
                     title: Row(
                       children: [
                         Expanded(
@@ -360,11 +382,11 @@ class _MessagesPageState extends State<MessagesPage> {
                           ),
                         ),
                         if (hasUnread) ...[
-                          SizedBox(height: 0.8.h),
+                          SizedBox(height: isDesktop ? 8 : 0.8.h),
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 2.w,
-                              vertical: 0.4.h,
+                              horizontal: isDesktop ? 8 : 2.w,
+                              vertical: isDesktop ? 4 : 0.4.h,
                             ),
                             decoration: const BoxDecoration(
                               color: Color(0xFF1877F2),

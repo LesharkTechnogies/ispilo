@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/services/seller_service.dart';
 import '../../core/services/conversation_service.dart';
+import '../../data/marketplace_data.dart';
 
 import '../../core/app_export.dart';
 import '../../core/models/seller.dart';
@@ -102,40 +103,14 @@ Ideal for ISP deployments, corporate networks, and data center edge applications
       }
     };
 
-    _relatedProducts = [
-      {
-        "id": "prod_002",
-        "title": "Cisco ASA 5506-X Firewall",
-        "price": "\$1,250.00",
-        "image":
-            "https://images.pexels.com/photos/442150/pexels-photo-442150.jpeg?auto=compress&cs=tinysrgb&w=400",
-        "rating": 4.7
-      },
-      {
-        "id": "prod_003",
-        "title": "Ubiquiti UniFi Switch 24-Port",
-        "price": "\$379.00",
-        "image":
-            "https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=400",
-        "rating": 4.6
-      },
-      {
-        "id": "prod_004",
-        "title": "Netgear ProSAFE 48-Port Switch",
-        "price": "\$899.00",
-        "image":
-            "https://images.pexels.com/photos/159304/network-cable-ethernet-computer-159304.jpeg?auto=compress&cs=tinysrgb&w=400",
-        "rating": 4.4
-      },
-      {
-        "id": "prod_005",
-        "title": "HP Aruba 2930F Switch Series",
-        "price": "\$1,850.00",
-        "image":
-            "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=400",
-        "rating": 4.8
-      }
-    ];
+    // Fetch related products using MarketplaceData
+    final productId = _productData['id'] as String;
+    _relatedProducts = MarketplaceData.getRelatedProducts(productId);
+    
+    // If no related products found, get some from the same category
+    if (_relatedProducts.isEmpty) {
+      _relatedProducts = MarketplaceData.allProducts.take(4).toList();
+    }
   }
 
   @override
