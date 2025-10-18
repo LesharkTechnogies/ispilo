@@ -10,6 +10,8 @@ import './widgets/empty_state_widget.dart';
 import './widgets/filter_bottom_sheet_widget.dart';
 import './widgets/my_learning_section_widget.dart';
 import './widgets/search_bar_widget.dart';
+import './widgets/video_card_widget.dart';
+import '../../data/mock_education_data.dart';
 
 class EducationHub extends StatefulWidget {
   const EducationHub({super.key});
@@ -35,39 +37,14 @@ class _EducationHubState extends State<EducationHub>
   bool _isLoading = false;
   bool _isSearching = false;
 
-  // Mock data for trending categories
-  final List<String> _trendingCategories = [
-    'All',
-    'Network Security',
-    'Routing & Switching',
-    'Wireless Tech',
-    'Cloud Networking',
-    'VoIP',
-    'Fiber Optics',
-    'Network Management',
-  ];
+  // Trending categories (mocked)
+  final List<String> _trendingCategories = mockTrendingCategories;
 
-  // Mock data for enrolled courses
-  final List<Map<String, dynamic>> _enrolledCourses = [
-    {
-      "id": 1,
-      "title": "Advanced Network Security Fundamentals",
-      "instructor": "Dr. Sarah Chen",
-      "thumbnail":
-          "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
-      "progress": 0.65,
-      "isEnrolled": true,
-    },
-    {
-      "id": 2,
-      "title": "Cisco CCNA Routing and Switching Complete Course",
-      "instructor": "Michael Rodriguez",
-      "thumbnail":
-          "https://images.unsplash.com/photo-1451187580459-43490279c0fa?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
-      "progress": 0.32,
-      "isEnrolled": true,
-    },
-  ];
+  // Enrolled courses (mocked)
+  final List<Map<String, dynamic>> _enrolledCourses = mockEnrolledCourses;
+
+  // Education hub videos (mocked)
+  final List<Map<String, String>> _videos = mockEducationVideos;
 
   // Mock data for course catalog
   final List<Map<String, dynamic>> _allCourses = [
@@ -361,11 +338,110 @@ class _EducationHubState extends State<EducationHub>
                 ),
               ),
 
-              // My Learning Section
+              // Featured Videos (Horizontal grid 2 up)
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: EdgeInsets.only(top: 1.h, bottom: 1.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Text(
+                          'Featured Videos',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 1.h),
+                      SizedBox(
+                        height: 28.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          itemCount: (_videos.length / 3).ceil(),
+                          itemBuilder: (context, colIndex) {
+                            final firstIndex = colIndex * 3;
+                            final secondIndex = firstIndex + 1;
+                            final thirdIndex = firstIndex + 2;
+                            final first = _videos[firstIndex];
+                            final second = secondIndex < _videos.length ? _videos[secondIndex] : null;
+                            final third = thirdIndex < _videos.length ? _videos[thirdIndex] : null;
+
+                            return Container(
+                              width: 30.w + 30.w + 30.w + 31 * 2,
+                              margin: const EdgeInsets.only(right: 31),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 30.w,
+                                    height: 27.h,
+                                    child: VideoCardWidget(
+                                      thumbnailUrl: first['thumbnail']!,
+                                      title: first['title']!,
+                                      subtitle: first['channel'],
+                                      duration: first['duration'],
+                                      views: first['views'],
+                                      onTap: () {
+                                        // TODO: Navigate to video player/details
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 31),
+                                  if (second != null)
+                                    SizedBox(
+                                      width: 30.w,
+                                      height: 27.h,
+                                      child: VideoCardWidget(
+                                        thumbnailUrl: second['thumbnail']!,
+                                        title: second['title']!,
+                                        subtitle: second['channel'],
+                                        duration: second['duration'],
+                                        views: second['views'],
+                                        onTap: () {
+                                          // TODO: Navigate to video player/details
+                                        },
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(width: 30.w, height: 27.h),
+                                  const SizedBox(width: 31),
+                                  if (third != null)
+                                    SizedBox(
+                                      width: 30.w,
+                                      height: 27.h,
+                                      child: VideoCardWidget(
+                                        thumbnailUrl: third['thumbnail']!,
+                                        title: third['title']!,
+                                        subtitle: third['channel'],
+                                        duration: third['duration'],
+                                        views: third['views'],
+                                        onTap: () {
+                                          // TODO: Navigate to video player/details
+                                        },
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(width: 30.w, height: 27.h),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // My Learning Section (with videos)
               SliverToBoxAdapter(
                 child: MyLearningSectionWidget(
                   enrolledCourses: _enrolledCourses,
                   onContinueCourse: _onContinueCourse,
+                  enrolledVideos: _videos,
                 ),
               ),
             ],

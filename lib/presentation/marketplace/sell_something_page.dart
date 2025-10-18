@@ -39,7 +39,7 @@ class _SellSomethingPageState extends State<SellSomethingPage> {
   final ImagePicker _picker = ImagePicker();
 
   // For dynamic table rows
-  List<Map<String, String>> _tableRows = [
+  final List<Map<String, String>> _tableRows = [
     {'Size': '', 'Model': ''},
   ];
 
@@ -110,7 +110,7 @@ class _SellSomethingPageState extends State<SellSomethingPage> {
                       const SizedBox(height: 12),
                       _userShops.length > 1
                           ? DropdownButtonFormField<String>(
-                              value: _selectedShop,
+                              initialValue: _selectedShop,
                               items: _userShops
                                   .map((shop) => DropdownMenuItem(
                                         value: shop,
@@ -200,7 +200,7 @@ class _SellSomethingPageState extends State<SellSomethingPage> {
                                 ),
                               ],
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                       Align(

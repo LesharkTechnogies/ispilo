@@ -35,8 +35,8 @@ final Map<String, dynamic> kCurrentUser = {
 final List<Map<String, dynamic>> kUsers = [
   {
     'id': 1,
-    'username': 'alex_network',
-    'name': 'Alex Network',
+    'username': 'wima net',
+    'name': 'wima net',
     'avatar':
         'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400',
     'isOnline': true,
@@ -44,8 +44,8 @@ final List<Map<String, dynamic>> kUsers = [
   },
   {
     'id': 2,
-    'username': 'sarah_tech',
-    'name': 'Sarah Chen',
+    'username': 'home max core',
+    'name': 'home max core',
     'avatar':
         'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400',
     'isOnline': false,
@@ -105,7 +105,7 @@ final List<Map<String, dynamic>> kStories = [
 final List<Map<String, dynamic>> kPosts = [
   {
     "id": 1,
-    "username": "alex_network",
+    "username": "wima net",
     "userAvatar":
         "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
     "timestamp": "2 hours ago",
@@ -122,7 +122,7 @@ final List<Map<String, dynamic>> kPosts = [
   },
   {
     "id": 2,
-    "username": "sarah_tech",
+    "username": "home max core",
     "userAvatar":
         "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400",
     "timestamp": "4 hours ago",
@@ -341,8 +341,8 @@ final Map<int, List<Map<String, dynamic>>> kMessages = {
 // Map userId -> list of posts by that user.
 // This lets us show a user's posts when tapping their story in HomeFeed.
 final Map<int, List<Map<String, dynamic>>> kUserPosts = {
-  1: kPosts.where((p) => p['username'] == 'alex_network').toList(),
-  2: kPosts.where((p) => p['username'] == 'sarah_tech').toList(),
+  1: kPosts.where((p) => p['username'] == 'wima net').toList(),
+  2: kPosts.where((p) => p['username'] == 'home max core').toList(),
   3: kPosts.where((p) => p['username'] == 'mike_admin').toList(),
   4: kPosts.where((p) => p['username'] == 'lisa_isp').toList(),
   5: kPosts.where((p) => p['username'] == 'netgear_pro').toList(),

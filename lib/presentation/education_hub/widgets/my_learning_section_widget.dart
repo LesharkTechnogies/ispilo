@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import 'video_card_widget.dart';
 
 class MyLearningSectionWidget extends StatelessWidget {
   final List<Map<String, dynamic>> enrolledCourses;
   final Function(Map<String, dynamic>) onContinueCourse;
+  final List<Map<String, String>> enrolledVideos;
 
   const MyLearningSectionWidget({
     super.key,
     required this.enrolledCourses,
     required this.onContinueCourse,
+    this.enrolledVideos = const [],
   });
 
   @override
@@ -27,46 +30,104 @@ class MyLearningSectionWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'My Learning',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15.sp.clamp(13.sp, 18.sp),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Navigate to full my learning page
-                  },
-                  child: Text(
-                    'View All',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 1.h),
-          SizedBox(
-            height: 14.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
+          
+         
+          if (enrolledVideos.isNotEmpty) ...[
+            SizedBox(height: 2.h),
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w),
-              itemCount: enrolledCourses.length,
-              itemBuilder: (context, index) {
-                final course = enrolledCourses[index];
-                return _buildEnrolledCourseCard(context, course, theme);
-              },
+              child: Text(
+                'My Learning Videos',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp.clamp(12.sp, 17.sp),
+                ),
+              ),
             ),
-          ),
+            SizedBox(height: 1.h),
+            SizedBox(
+              height: 28.h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                itemCount: (enrolledVideos.length / 3).ceil(),
+                itemBuilder: (context, colIndex) {
+                  final firstIndex = colIndex * 3;
+                  final secondIndex = firstIndex + 1;
+                  final thirdIndex = firstIndex + 2;
+                  final first = enrolledVideos[firstIndex];
+                  final Map<String, String>? second =
+                      secondIndex < enrolledVideos.length
+                          ? enrolledVideos[secondIndex]
+                          : null;
+                  final Map<String, String>? third =
+                      thirdIndex < enrolledVideos.length
+                          ? enrolledVideos[thirdIndex]
+                          : null;
+
+                  return Container(
+                    width: 30.w + 30.w + 30.w + 31 * 2,
+                    margin: const EdgeInsets.only(right: 31),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 30.w,
+                          height: 27.h,
+                          child: VideoCardWidget(
+                            thumbnailUrl: first['thumbnail'] ?? '',
+                            title: first['title'] ?? '',
+                            subtitle: first['channel'],
+                            duration: first['duration'],
+                            views: first['views'],
+                            onTap: () {
+                              // TODO: Navigate to video player/details
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 31),
+                        if (second != null)
+                          SizedBox(
+                            width: 30.w,
+                            height: 27.h,
+                            child: VideoCardWidget(
+                              thumbnailUrl: second['thumbnail'] ?? '',
+                              title: second['title'] ?? '',
+                              subtitle: second['channel'],
+                              duration: second['duration'],
+                              views: second['views'],
+                              onTap: () {
+                                // TODO: Navigate to video player/details
+                              },
+                            ),
+                          )
+                        else
+                          SizedBox(width: 30.w, height: 27.h),
+                        const SizedBox(width: 31),
+                        if (third != null)
+                          SizedBox(
+                            width: 30.w,
+                            height: 27.h,
+                            child: VideoCardWidget(
+                              thumbnailUrl: third['thumbnail'] ?? '',
+                              title: third['title'] ?? '',
+                              subtitle: third['channel'],
+                              duration: third['duration'],
+                              views: third['views'],
+                              onTap: () {
+                                // TODO: Navigate to video player/details
+                              },
+                            ),
+                          )
+                        else
+                          SizedBox(width: 30.w, height: 27.h),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

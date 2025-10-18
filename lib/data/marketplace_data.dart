@@ -8,7 +8,7 @@ class MarketplaceData {
       "title": "TP-Link TL-SF1005D 5-Port Switch",
       "price": "KSh 800",
       "image":
-          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
+          "https://media.istockphoto.com/id/2193068003/photo/man-with-smartphone-and-laptop-connecting-to-internet-via-wi-fi-router-at-wooden-table-closeup.jpg?s=1024x1024&w=is&k=20&c=prqBMs1sGUEDuiz1BafuN_owlMwvFhYnQaN_wxO6JHg=",
       "category": "Hardware",
       "rating": 4.8,
       "location": "Nairobi, Kenya",
@@ -135,7 +135,7 @@ class MarketplaceData {
       "title": "Tenda N301 Wireless N Router",
       "price": "KSh 1,100",
       "image":
-          "https://images.unsplash.com/photo-1606904825846-647eb07f5be2?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
+          "https://media.istockphoto.com/id/2193068003/photo/man-with-smartphone-and-laptop-connecting-to-internet-via-wi-fi-router-at-wooden-table-closeup.jpg?s=1024x1024&w=is&k=20&c=prqBMs1sGUEDuiz1BafuN_owlMwvFhYnQaN_wxO6JHg=",
       "category": "Hardware",
       "rating": 4.7,
       "location": "Kisumu, Kenya",

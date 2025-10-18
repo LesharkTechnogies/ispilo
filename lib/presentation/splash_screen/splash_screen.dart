@@ -306,16 +306,22 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ] else ...[
                             // Loading state
-                            SizedBox(
-                              width: 32.w,
-                              height: 32.w,
-                              child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      AppTheme.lightTheme.colorScheme.primary),
-                                  strokeWidth: 3,
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: SizedBox(
+                                width: 18.w,
+                                height: 18.w,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        AppTheme.lightTheme.colorScheme.primary),
+                                    strokeWidth: 3,
+                                  ),
                                 ),
+                              ),
                             ),
-                            SizedBox(height: 3.h),
+                            SizedBox(height: 2.h),
                             Text(
                               _isInitialized
                                   ? 'Ready to connect!'

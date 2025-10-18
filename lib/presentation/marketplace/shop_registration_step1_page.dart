@@ -185,7 +185,7 @@ class _ShopRegistrationStep1PageState extends State<ShopRegistrationStep1Page> {
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        value: _selectedProvider,
+                        initialValue: _selectedProvider,
                         items: _providers
                             .map((p) => DropdownMenuItem(
                                   value: p,
